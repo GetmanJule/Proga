@@ -1,4 +1,4 @@
-package org.interactive.commands;
+package org.inner.commands;
 
 import org.data.inner.Coordinates;
 import org.data.inner.Location;
@@ -12,48 +12,18 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
 
-/*
-
+/**
+ * Команда для добавления нового элемента Movie
  */
-public class UpdateCommand implements Command {
-    private String script;
-    private ArrayList<Movie> mySet;
-
-    public UpdateCommand(String script, ArrayList<Movie> mySet) {
-        this.script = script;
-        this.mySet = mySet;
-    }
+public class AddElement implements Command {
 
 
     @Override
     public Movie doo() {
-        if (script.split(" ").length != 2) {
-            System.out.println("Usage: update <id>");
-        }
-
-        long id = 0;
-        try {
-            id = Long.parseLong(script.split(" ")[1]);
-        } catch (NumberFormatException e) {
-            System.out.println("Id should be a number!");
-        }
-
-        // Проверяем, есть ли фильм с таким id
-        Movie movieToUpdate = null;
-        for (Movie m : mySet) {
-            if (m.getId() == id) {
-                movieToUpdate = m;
-                break;
-            }
-        }
-
-        if (movieToUpdate == null) {
-            System.out.println("Object with id " + id + " not found!");
-        }
-
+        // === режим интерактивного ввода ===
         Scanner sc = new Scanner(System.in);
 
-        // === Начало обновления ===
+        // название фильма
         String name = "";
         System.out.println("Enter Movie name:");
         while (name.isEmpty()) {
@@ -63,6 +33,7 @@ public class UpdateCommand implements Command {
             }
         }
 
+        // координата X
         Float corX = null;
         System.out.println("Enter corX (max=906) :");
         while (corX == null) {
@@ -78,6 +49,7 @@ public class UpdateCommand implements Command {
             }
         }
 
+        // координата Y
         Long corY = null;
         System.out.println("Enter corY (max=655) :");
         while (corY == null) {
@@ -90,11 +62,13 @@ public class UpdateCommand implements Command {
                 }
             } catch (Exception e) {
                 System.out.println("Enter corY (max=655)! Please enter Valid Value:");
+                corY = null;
             }
         }
 
+        // количество Оскаров
         Long oscar = 0L;
-        while (oscar <= 0) {
+        while (0 >= oscar) {
             System.out.println("Enter oscarsCount(>0):");
             String x = sc.nextLine();
             try {
@@ -104,17 +78,20 @@ public class UpdateCommand implements Command {
             }
         }
 
+        // бюджет
         Float budget = 0F;
-        while (budget <= 0) {
+        while (0 >= budget) {
             System.out.println("Enter budget (>0):");
             String x = sc.nextLine();
             try {
                 budget = Float.parseFloat(x);
             } catch (Exception e) {
                 System.out.println("Enter budget! Please enter Valid Value:");
+                budget = 0F;
             }
         }
 
+        // касса США
         Double usaBoxOffice = 0D;
         while (usaBoxOffice <= 0) {
             System.out.println("Enter usaBoxOffice (>0):");
@@ -123,9 +100,11 @@ public class UpdateCommand implements Command {
                 usaBoxOffice = Double.parseDouble(x);
             } catch (Exception e) {
                 System.out.println("Enter usaBoxOffice! Please enter Valid Value:");
+                usaBoxOffice = 0D;
             }
         }
 
+        // рейтинг MPAA
         MpaaRating mpaaRating = null;
         while (mpaaRating == null) {
             System.out.println("Enter mpaaRating: \n" +
@@ -139,10 +118,12 @@ public class UpdateCommand implements Command {
                 mpaaRating = MpaaRating.getRating(Integer.parseInt(x));
             } catch (Exception e) {
                 System.out.println("Enter mpaaRating! Please enter Valid Value:");
+                mpaaRating = null;
             }
         }
 
-        // === Person ===
+        // оператор фильма
+        System.out.println("Person Adding:");
         String persName = "";
         while (persName.isEmpty()) {
             System.out.println("Enter Person Name:");
@@ -154,15 +135,11 @@ public class UpdateCommand implements Command {
             System.out.println("Enter Person passportId:");
             passportId = sc.nextLine();
 
-            for (Movie m : mySet) {
-                if (m.getOperator().getPassportID().equals(passportId)) {
-                    System.out.println("Person passportID must be unique:");
-                    passportId = "";
-                }
-            }
+
         }
 
-        Color perClorEye = null;
+        // цвет глаз
+        Color perColorEye = null;
         boolean flag = false;
         System.out.println("Enter Person eyeColor: \n" +
                            "    1 - GREEN\n" +
@@ -172,16 +149,14 @@ public class UpdateCommand implements Command {
                            "    5 - BROWN");
         while (!flag) {
             String x = sc.nextLine();
-
             if (x.isEmpty()) {
-                perClorEye = null;
+                perColorEye = null;
                 flag = true;
                 break;
             }
             try {
-                int val = Integer.parseInt(x);
-                if (val >= 1 && val <= 5) {
-                    perClorEye = Color.getColorByValue(val);
+                if (Integer.parseInt(x) >= 1 && Integer.parseInt(x) <= 5) {
+                    perColorEye = Color.getColorByValue(Integer.parseInt(x));
                     flag = true;
                 }
             } catch (Exception e) {
@@ -189,6 +164,7 @@ public class UpdateCommand implements Command {
             }
         }
 
+        // национальность
         Country nationality = null;
         while (nationality == null) {
             System.out.println("Enter Person nationality: \n" +
@@ -200,16 +176,26 @@ public class UpdateCommand implements Command {
                 nationality = Country.getCountryByValue(Integer.parseInt(x));
             } catch (Exception e) {
                 System.out.println("Enter Person nationality! Please enter Valid Value:");
+                nationality = null;
             }
         }
 
-        // === Location (optional) ===
-        Location loc = null;
-        System.out.println("Do you want add Location? (y/n) or 1/0");
-        String ans = sc.nextLine();
-        if (ans.equals("y") || ans.equals("1")) {
-            loc = new Location();
+        // добавление Location
+        boolean flagLoc = false;
+        while (!flagLoc) {
+            System.out.println("Do you want add Location? (y/n) or 1/0");
+            String x = sc.nextLine();
+            if (!x.isEmpty() && (x.equals("y") || x.equals("1"))) {
+                flagLoc = true;
+                break;
+            }
+            if (!x.isEmpty() && (x.equals("n") || x.equals("0"))) {
+                break;
+            }
+        }
 
+        Location loc = null;
+        if (flagLoc) {
             Float locX = null;
             System.out.println("Enter location X:");
             while (locX == null) {
@@ -232,35 +218,22 @@ public class UpdateCommand implements Command {
                 }
             }
 
+            String locName = "";
             System.out.println("Enter location name:");
-            String locName = sc.nextLine();
+            locName = sc.nextLine();
 
-            loc.setX(locX);
-            loc.setY(locY);
-            loc.setName(locName);
+            loc = new Location(locX, locY, locName);
         }
 
-        // === Обновляем объект ===
-        movieToUpdate.setName(name);
-        movieToUpdate.setCoordinates(new Coordinates(corX, corY));
-        movieToUpdate.setOscarsCount(oscar);
-        movieToUpdate.setUsaBoxOffice(usaBoxOffice);
-        movieToUpdate.setMpaaRating(mpaaRating);
-        movieToUpdate.setOperator(new Person(persName, passportId, perClorEye, nationality, loc));
-
-        mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
-
-        System.out.println("Object with id " + id + " successfully updated!");
-        return movieToUpdate;
-    }
-
-    @Override
-    public String des() {
-        return "update id {element} : обновить значение элемента коллекции, id которого равен заданному";
-    }
-
-    @Override
-    public String getName() {
-        return "update";
+        Movie movie = new Movie(
+                name,
+                new Coordinates(corX, corY),
+                oscar,
+                budget,
+                usaBoxOffice,
+                mpaaRating,
+                new Person(persName, passportId, perColorEye, nationality, loc)
+        );
+        return movie;
     }
 }

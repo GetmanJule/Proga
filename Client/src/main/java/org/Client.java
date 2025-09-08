@@ -2,7 +2,9 @@ package org;
 
 import org.data.AnswerDto;
 import org.data.RequestDto;
+import org.data.inner.Movie;
 import org.inner.ConsoleIO;
+import org.inner.commands.ClientCommandManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,6 +19,11 @@ public class Client {
 
     private final static String host = "localhost";
     private final static int port = 8000;
+    private final ClientCommandManager commandManager;
+
+    public Client(ClientCommandManager commandManager) {
+        this.commandManager = commandManager;
+    }
 
     public void connect(ConsoleIO consoleIO) {
         SocketChannel client = null;
@@ -36,12 +43,17 @@ public class Client {
 
                 // цикл отправки/чтения команд
                 while (true) {
+                    RequestDto requestDto = new RequestDto();
                     String msg = consoleIO.write(); // читаем ввод пользователя
                     if (msg == null || msg.isEmpty()) continue;
-
+                    Movie movie = commandManager.execute(msg);
+                    if (movie != null) {
+                        requestDto.setMovie(movie);
+                    }
+                    requestDto.setCommand(msg);
                     // отправляем
                     buffer.clear();
-                    buffer.put(toBytes(new RequestDto(null, msg)));
+                    buffer.put(toBytes(requestDto));
                     buffer.flip();
                     client.write(buffer);
 
@@ -59,6 +71,7 @@ public class Client {
                         break;
                     }
                     AnswerDto answerDto = (AnswerDto) fromBytes(buffer.array());
+
                     System.out.println("Ответ сервера: " + answerDto.getAnswer());
                 }
 

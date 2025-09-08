@@ -1,4 +1,4 @@
-package org.interactive.commands;
+package org.inner.commands;
 
 import org.data.inner.Coordinates;
 import org.data.inner.Location;
@@ -12,62 +12,16 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
 
-/**
- * Команда для добавления нового элемента Movie
- */
-public class AddElement implements Command {
-    private String script;
-    private ArrayList<Movie> mySet;
+/*
 
-    public AddElement(String script, ArrayList<Movie> mySet) {
-        this.script = script;
-        this.mySet = mySet;
-    }
+ */
+public class UpdateCommand implements Command {
 
     @Override
     public Movie doo() {
-        // === режим добавления из скрипта (одной строкой) ===
-        if (script.split(" ").length != 1) {
-            String[] all = script.split(" ");
-            try {
-                for (Movie m : mySet) {
-                    if (m.getOperator().getPassportID().equals(all[9])) {
-                        System.out.println("Ошибка: Person passportID '" + all[9] + "' уже существует!");
-                    }
-                }
-
-                Movie movie = new Movie(
-                        all[1],
-                        new Coordinates(Float.parseFloat(all[2]), Long.parseLong(all[3])),
-                        Long.parseLong(all[4]),
-                        Float.parseFloat(all[5]),
-                        Double.parseDouble(all[6]),
-                        MpaaRating.getRating(Integer.parseInt(all[7])),
-                        new Person(
-                                all[8],
-                                all[9],
-                                Color.getColorByValue(Integer.parseInt(all[10])),
-                                Country.getCountryByValue(Integer.parseInt(all[11])),
-                                new Location(
-                                        Float.parseFloat(all[12]),
-                                        Double.parseDouble(all[13]),
-                                        all[14]
-                                )
-                        )
-                );
-                mySet.add(movie);
-                mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
-                System.out.println("Фильм '" + all[1] + "' успешно добавлен из скрипта!");
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Ошибка при добавлении фильма из скрипта!");
-            }
-        }
-
-        // === режим интерактивного ввода ===
         Scanner sc = new Scanner(System.in);
 
-        // название фильма
+        // === Начало обновления ===
         String name = "";
         System.out.println("Enter Movie name:");
         while (name.isEmpty()) {
@@ -77,7 +31,6 @@ public class AddElement implements Command {
             }
         }
 
-        // координата X
         Float corX = null;
         System.out.println("Enter corX (max=906) :");
         while (corX == null) {
@@ -93,7 +46,6 @@ public class AddElement implements Command {
             }
         }
 
-        // координата Y
         Long corY = null;
         System.out.println("Enter corY (max=655) :");
         while (corY == null) {
@@ -106,13 +58,11 @@ public class AddElement implements Command {
                 }
             } catch (Exception e) {
                 System.out.println("Enter corY (max=655)! Please enter Valid Value:");
-                corY = null;
             }
         }
 
-        // количество Оскаров
         Long oscar = 0L;
-        while (0 >= oscar) {
+        while (oscar <= 0) {
             System.out.println("Enter oscarsCount(>0):");
             String x = sc.nextLine();
             try {
@@ -122,20 +72,17 @@ public class AddElement implements Command {
             }
         }
 
-        // бюджет
         Float budget = 0F;
-        while (0 >= budget) {
+        while (budget <= 0) {
             System.out.println("Enter budget (>0):");
             String x = sc.nextLine();
             try {
                 budget = Float.parseFloat(x);
             } catch (Exception e) {
                 System.out.println("Enter budget! Please enter Valid Value:");
-                budget = 0F;
             }
         }
 
-        // касса США
         Double usaBoxOffice = 0D;
         while (usaBoxOffice <= 0) {
             System.out.println("Enter usaBoxOffice (>0):");
@@ -144,11 +91,9 @@ public class AddElement implements Command {
                 usaBoxOffice = Double.parseDouble(x);
             } catch (Exception e) {
                 System.out.println("Enter usaBoxOffice! Please enter Valid Value:");
-                usaBoxOffice = 0D;
             }
         }
 
-        // рейтинг MPAA
         MpaaRating mpaaRating = null;
         while (mpaaRating == null) {
             System.out.println("Enter mpaaRating: \n" +
@@ -162,12 +107,10 @@ public class AddElement implements Command {
                 mpaaRating = MpaaRating.getRating(Integer.parseInt(x));
             } catch (Exception e) {
                 System.out.println("Enter mpaaRating! Please enter Valid Value:");
-                mpaaRating = null;
             }
         }
 
-        // оператор фильма
-        System.out.println("Person Adding:");
+        // === Person ===
         String persName = "";
         while (persName.isEmpty()) {
             System.out.println("Enter Person Name:");
@@ -179,16 +122,9 @@ public class AddElement implements Command {
             System.out.println("Enter Person passportId:");
             passportId = sc.nextLine();
 
-            for (Movie m : mySet) {
-                if (m.getOperator().getPassportID().equals(passportId)) {
-                    System.out.println("Person passportID must be unique:");
-                    passportId = "";
-                }
-            }
         }
 
-        // цвет глаз
-        Color perColorEye = null;
+        Color perClorEye = null;
         boolean flag = false;
         System.out.println("Enter Person eyeColor: \n" +
                            "    1 - GREEN\n" +
@@ -198,14 +134,16 @@ public class AddElement implements Command {
                            "    5 - BROWN");
         while (!flag) {
             String x = sc.nextLine();
+
             if (x.isEmpty()) {
-                perColorEye = null;
+                perClorEye = null;
                 flag = true;
                 break;
             }
             try {
-                if (Integer.parseInt(x) >= 1 && Integer.parseInt(x) <= 5) {
-                    perColorEye = Color.getColorByValue(Integer.parseInt(x));
+                int val = Integer.parseInt(x);
+                if (val >= 1 && val <= 5) {
+                    perClorEye = Color.getColorByValue(val);
                     flag = true;
                 }
             } catch (Exception e) {
@@ -213,7 +151,6 @@ public class AddElement implements Command {
             }
         }
 
-        // национальность
         Country nationality = null;
         while (nationality == null) {
             System.out.println("Enter Person nationality: \n" +
@@ -225,26 +162,16 @@ public class AddElement implements Command {
                 nationality = Country.getCountryByValue(Integer.parseInt(x));
             } catch (Exception e) {
                 System.out.println("Enter Person nationality! Please enter Valid Value:");
-                nationality = null;
             }
         }
 
-        // добавление Location
-        boolean flagLoc = false;
-        while (!flagLoc) {
-            System.out.println("Do you want add Location? (y/n) or 1/0");
-            String x = sc.nextLine();
-            if (!x.isEmpty() && (x.equals("y") || x.equals("1"))) {
-                flagLoc = true;
-                break;
-            }
-            if (!x.isEmpty() && (x.equals("n") || x.equals("0"))) {
-                break;
-            }
-        }
-
+        // === Location (optional) ===
         Location loc = null;
-        if (flagLoc) {
+        System.out.println("Do you want add Location? (y/n) or 1/0");
+        String ans = sc.nextLine();
+        if (ans.equals("y") || ans.equals("1")) {
+            loc = new Location();
+
             Float locX = null;
             System.out.println("Enter location X:");
             while (locX == null) {
@@ -267,32 +194,24 @@ public class AddElement implements Command {
                 }
             }
 
-            String locName = "";
             System.out.println("Enter location name:");
-            locName = sc.nextLine();
+            String locName = sc.nextLine();
 
-            loc = new Location(locX, locY, locName);
+            loc.setX(locX);
+            loc.setY(locY);
+            loc.setName(locName);
         }
 
-        Movie movie = new Movie(
-                name,
-                new Coordinates(corX, corY),
-                oscar,
-                budget,
-                usaBoxOffice,
-                mpaaRating,
-                new Person(persName, passportId, perColorEye, nationality, loc)
-        );
-        return movie;
-    }
+        // === Обновляем объект ===
+        Movie movieToUpdate = new Movie();
 
-    @Override
-    public String des() {
-        return "add {element} : добавить новый элемент в коллекцию";
-    }
+        movieToUpdate.setName(name);
+        movieToUpdate.setCoordinates(new Coordinates(corX, corY));
+        movieToUpdate.setOscarsCount(oscar);
+        movieToUpdate.setUsaBoxOffice(usaBoxOffice);
+        movieToUpdate.setMpaaRating(mpaaRating);
+        movieToUpdate.setOperator(new Person(persName, passportId, perClorEye, nationality, loc));
 
-    @Override
-    public String getName() {
-        return "add";
+        return movieToUpdate;
     }
 }

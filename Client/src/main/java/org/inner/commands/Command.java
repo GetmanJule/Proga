@@ -1,4 +1,4 @@
-package org.interactive.commands;
+package org.inner.commands;
 
 import org.data.inner.Movie;
 
@@ -6,16 +6,6 @@ import org.data.inner.Movie;
 
  */
 public interface Command {//базовый интерфейс для команд
-    /*
 
-     */
     Movie doo();
-    /*
-
-     */
-    String des(); //описание
-    /*
-
-     */
-    String getName();
 }

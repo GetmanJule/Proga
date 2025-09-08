@@ -35,13 +35,14 @@ public class Server {
             InputStream in = clientSocket.getInputStream();
             OutputStream out = clientSocket.getOutputStream();
 
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[4096];
             int bytesRead;
 
             // цикл обработки сообщений
             while ((bytesRead = in.read(buffer)) != -1) {
                 RequestDto requestDto = (RequestDto) fromBytes(buffer);
                 String message = requestDto.getCommand();
+                //todo:пофиксить nullPointer
                 System.out.println("Получено: " + message);
 
                 // формируем ответ
