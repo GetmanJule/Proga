@@ -1,9 +1,9 @@
 package org.main;
 
-import org.Static.CommandManager;
-import org.classes.Movie;
-import org.commands.Commands;
-import org.managerData.XMLManager;
+import org.inner.commands.CommandManager;
+import org.data.Movie;
+import org.inner.commands.Commands;
+import org.inner.utils.XMLManager;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
