@@ -18,54 +18,56 @@ public class Client {
             try {
                 // создаём канал
                 client = SocketChannel.open();
-                client.configureBlocking(false);
+                client.configureBlocking(true); // лучше блокирующий режим для простоты
 
-                // пытаемся подключиться
+                // подключаемся
                 client.connect(new InetSocketAddress(host, port));
-
-                // ждём установления соединения
-                while (!client.finishConnect()) {
-                    System.out.println("Ожидание подключения...");
-                    Thread.sleep(200);
-                }
-
                 System.out.println("Подключено к серверу");
 
-                // отправляем сообщение
-                String msg = consoleIO.write();
-                ByteBuffer buffer = ByteBuffer.wrap(msg.getBytes());
-                client.write(buffer);
+                // буфер
+                ByteBuffer buffer = ByteBuffer.allocate(1024);
 
-                // читаем ответ
-                buffer.clear();
-                int bytesRead;
-                while ((bytesRead = client.read(buffer)) <= 0) {
-                    System.out.println("Ожидание ответа...");
-                    Thread.sleep(100);
+                // цикл отправки/чтения команд
+                while (true) {
+                    String msg = consoleIO.write(); // читаем ввод пользователя
+                    if (msg == null || msg.isEmpty()) continue;
+
+                    // отправляем
+                    buffer.clear();
+                    buffer.put(msg.getBytes());
+                    buffer.flip();
+                    client.write(buffer);
+
+                    // если команда exit → сразу выходим
+                    if ("exit".equalsIgnoreCase(msg.trim())) {
+                        System.out.println("Завершение работы клиента...");
+                        return;
+                    }
+
+                    // читаем ответ
+                    buffer.clear();
+                    int bytesRead = client.read(buffer);
+                    if (bytesRead == -1) {
+                        System.out.println("Сервер закрыл соединение");
+                        break;
+                    }
+                    String response = new String(buffer.array(), 0, bytesRead);
+                    System.out.println("Ответ сервера: " + response);
                 }
 
-                String response = new String(buffer.array(), 0, bytesRead);
-                System.out.println("Ответ сервера: " + response);
-
                 client.close();
-                break; // завершаем работу после ответа
 
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 System.out.println("Сервер недоступен, повтор через 1 секунду...");
                 try {
                     if (client != null && client.isOpen()) {
                         client.close();
                     }
-                } catch (IOException ignored) {
-                }
-
+                } catch (IOException ignored) {}
                 try {
-                    Thread.sleep(1000); // подождать и попробовать снова
-                } catch (InterruptedException ignored) {
-                }
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {}
             }
         }
-
-
     }
 }

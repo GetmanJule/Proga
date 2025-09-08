@@ -11,17 +11,14 @@ import java.util.ArrayList;
  */
 public class SaveCommand implements Command {
     @Override
-    public boolean doo(ArrayList<Movie> mySet, String s) {
+    public String doo(ArrayList<Movie> mySet, String s) {
         try {
             XMLManager.writeToFile(Main.filePath);
             mySet = XMLManager.getData();
-            System.out.println("data is saved!");
+            return "data is saved!" + "\n";
         } catch (Exception e) {
-            System.out.println("Error saving data!");
-            /*System.out.println(e);*/
+            return "Error saving data!";
         }
-
-        return true;
     }
 
     @Override

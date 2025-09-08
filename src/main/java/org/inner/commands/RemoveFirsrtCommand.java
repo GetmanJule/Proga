@@ -8,22 +8,19 @@ import java.util.Comparator;
 /*
 
  */
-public class RemoveFirsrtCommand implements Command{
+public class RemoveFirsrtCommand implements Command {
     @Override
-    public boolean doo(ArrayList<Movie> mySet, String s) {
-        if(!mySet.isEmpty()){
-            for(Movie m : mySet){
-                    mySet.remove(m);
-                    System.out.println("Removed " + m.getName() + " from the data");
-                mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
-                    return true;
-            }
-        }else{
-            System.out.println("No such movie!");
+    public String doo(ArrayList<Movie> mySet, String s) {
+        if (mySet.isEmpty()) {
+            return "Коллекция пуста! Удалять нечего.";
         }
 
-        return true;
+        Movie removed = mySet.remove(0);
+        mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
+
+        return "Фильм '" + removed.getName() + "' удалён из коллекции.";
     }
+
 
     @Override
     public String des() {

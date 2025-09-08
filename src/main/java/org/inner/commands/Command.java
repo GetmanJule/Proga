@@ -11,7 +11,7 @@ public interface Command {//базовый интерфейс для коман�
     /*
 
      */
-    boolean doo(ArrayList<Movie> mySet, String s);
+    String doo(ArrayList<Movie> mySet, String s);
     /*
 
      */

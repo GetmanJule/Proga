@@ -10,30 +10,43 @@ import java.util.Comparator;
  */
 public class RemoveGreatherElement implements Command {
     @Override
-    public boolean doo(ArrayList<Movie> mySet, String s) {
+    public String doo(ArrayList<Movie> mySet, String s) {
         String[] idS = s.split(" ");
-        long id = -111111;
+        long id;
+
         try {
             id = Long.parseLong(idS[1]);
-        }catch (Exception e){
-            System.out.println("Id should be a number!");
-            return false;
+        } catch (Exception e) {
+            return "Id should be a number!";
         }
+
+        if (mySet.isEmpty()) {
+            return "Коллекция пуста, нечего удалять.";
+        }
+
+        StringBuilder result = new StringBuilder();
         ArrayList<Movie> newMySet = new ArrayList<>();
 
-        for(int i = 0; i < mySet.size(); i++){
-            if(mySet.get(i).getId() >= id){
-                System.out.println("Object with id " + mySet.get(i).getId() + " deleted!");
-            }else {
-                newMySet.add(mySet.get(i));
+        for (Movie m : mySet) {
+            if (m.getId() >= id) {
+                result.append("Фильм с id ").append(m.getId())
+                        .append(" ('").append(m.getName()).append("') удалён.\n");
+            } else {
+                newMySet.add(m);
             }
         }
 
         mySet.clear();
         mySet.addAll(newMySet);
         mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
-        return false;
+
+        if (result.length() == 0) {
+            return "Фильмов с id >= " + id + " не найдено.";
+        } else {
+            return result.toString().trim();
+        }
     }
+
 
     @Override
     public String des() {

@@ -10,16 +10,14 @@ import java.util.Collections;
  */
 public class ReorderCommand implements Command {
     @Override
-    public boolean doo(ArrayList<Movie> mySet, String s) {
+    public String doo(ArrayList<Movie> mySet, String s) {
         // Sorts `mySet` itself by movie name, ascending (A→Z)
         //mySet.sort(Comparator.comparing(Movie::getName));
         Collections.reverse(mySet);
-
-        System.out.println("List is reordered:");
         InfoCommand info = new InfoCommand();
         info.doo(mySet, s);
 
-        return true;
+        return "List is reordered:";
     }
 
     @Override

@@ -7,25 +7,24 @@ import java.util.ArrayList;
 /*
 
  */
-public class FilterContainsName implements Command{
+public class FilterContainsName implements Command {
     @Override
-    public boolean doo(ArrayList<Movie> mySet, String s) {
-        if(s.split(" ").length == 1){
-            System.out.println("Please enter the name of the movie");
-            return true;
+    public String doo(ArrayList<Movie> mySet, String s) {
+        if (s.split(" ").length == 1) {
+            return "Please enter the name of the movie";
         }
+        StringBuilder builder = new StringBuilder();
 
-        if (mySet.size() != 0){
-            for (Movie movie : mySet){//перебор во всех фильмах
-                if (movie.getName().contains(s.split(" ")[1])){
-                    System.out.println(movie.getName() + " contains " + s);
+        if (mySet.size() != 0) {
+            for (Movie movie : mySet) {//перебор во всех фильмах
+                if (movie.getName().contains(s.split(" ")[1])) {
+                    builder.append(movie.getName() + " contains " + s+"\n");
                 }
             }
-        }else{
-            System.out.println("No movies found!");
+            return builder.toString();
+        } else {
+            return "No movies found!";
         }
-
-        return true;
     }
 
     @Override

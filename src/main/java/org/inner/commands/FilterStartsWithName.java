@@ -7,25 +7,24 @@ import java.util.ArrayList;
 /*
 
  */
-public class FilterStartsWithName implements Command{
+public class FilterStartsWithName implements Command {
     @Override
-    public boolean doo(ArrayList<Movie> mySet, String s) {
-        if(s.split(" ").length == 1){
-            System.out.println("Please enter the name of the movie");
-            return true;
+    public String doo(ArrayList<Movie> mySet, String s) {
+        if (s.split(" ").length == 1) {
+            return "Please enter the name of the movie";
         }
+        StringBuilder builder = new StringBuilder();
 
-        if (mySet.size() != 0){
-            for (Movie movie : mySet){
-                if (movie.getName().startsWith(s.split(" ")[1])){
-                    System.out.println(movie.getName() + " start with " + s);
+        if (mySet.size() != 0) {
+            for (Movie movie : mySet) {
+                if (movie.getName().startsWith(s.split(" ")[1])) {
+                    builder.append(movie.getName() + " start with " + s + "\n");
                 }
             }
-        }else{
-            System.out.println("No movies found!");
+            return builder.toString();
+        } else {
+            return "No movies found!";
         }
-
-        return true;
     }
 
     @Override

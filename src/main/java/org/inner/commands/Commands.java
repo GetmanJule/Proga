@@ -1,4 +1,5 @@
 package org.inner.commands;
+
 import org.data.Movie;
 
 import java.io.IOException;
@@ -10,9 +11,8 @@ import java.util.ArrayList;
 
 public class Commands {
 
-    public boolean commandsEditor(ArrayList<Movie> mySet, String line) throws IOException {
+    public String commandsEditor(ArrayList<Movie> mySet, String line) {
         String[] cmdStr = line.split(" ");
-        CommandManager.listOfCommand.get(cmdStr[0]).doo(mySet, line); //ищет команду в commandManager и запускает
-        return true;
+        return  CommandManager.listOfCommand.get(cmdStr[0]).doo(mySet, line); //ищет команду в commandManager и запускает;
     }
 }

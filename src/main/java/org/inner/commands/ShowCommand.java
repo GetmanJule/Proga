@@ -8,18 +8,18 @@ import java.util.ArrayList;
 /*
 
  */
-public class ShowCommand implements Command{
+public class ShowCommand implements Command {
     @Override
-    public boolean doo(ArrayList<Movie> mySet, String s) {
-        if(mySet.size() > 0){
-            for(Movie m : mySet){
-                System.out.println(m);
+    public String doo(ArrayList<Movie> mySet, String s) {
+        StringBuilder builder = new StringBuilder();
+        if (mySet.size() > 0) {
+            for (Movie m : mySet) {
+                builder.append(m);
             }
-        }else {
-            System.out.println("data is empty!");
+            return builder.toString();
+        } else {
+            return "data is empty!";
         }
-
-        return true;
     }
 
     @Override

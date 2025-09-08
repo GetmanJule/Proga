@@ -9,11 +9,10 @@ import java.util.ArrayList;
  */
 public class ClearCommand implements Command {
     @Override
-    public boolean doo(ArrayList<Movie> mySet, String s) {
+    public String doo(ArrayList<Movie> mySet, String s) {
         /*XMLManager.dropAll();*/
         mySet.clear();
-        System.out.println("data is dropped!");
-        return false;
+        return new String("data is dropped!");
     }
 
     @Override

@@ -8,33 +8,42 @@ import java.util.Comparator;
 /*
 
  */
-public class RemoveByIdCommand implements Command{
+public class RemoveByIdCommand implements Command {
     @Override
-    public boolean doo(ArrayList<Movie> mySet, String s) {
-        if(s.split(" ").length == 1){
-            System.out.println("Please enter the ID of the movie");
-            return true;
+    public String doo(ArrayList<Movie> mySet, String s) {
+        if (s.split(" ").length == 1) {
+            return "Please enter the ID of the movie";
         }
 
-        boolean flag = false;
-        if(!mySet.isEmpty()){
-            for(Movie m : mySet){
-                if(m.getId() == Integer.parseInt(s.split(" ")[1])){
-                    mySet.remove(m);
-                    System.out.println("Removed " + m.getName() + " from the data");
-                    mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
-                    flag = true;
-                }
+        String idStr = s.split(" ")[1];
+        int id;
+        try {
+            id = Integer.parseInt(idStr);
+        } catch (NumberFormatException e) {
+            return "Invalid ID format: " + idStr;
+        }
+
+        if (mySet.isEmpty()) {
+            return "Коллекция пуста!";
+        }
+
+        Movie toRemove = null;
+        for (Movie m : mySet) {
+            if (m.getId() == id) {
+                toRemove = m;
+                break;
             }
-        }else{
-            System.out.println("No such movie!");
         }
 
-        if (flag == false){
-            System.out.println("No such movie!");
+        if (toRemove != null) {
+            mySet.remove(toRemove);
+            mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
+            return "Фильм '" + toRemove.getName() + "' с ID " + id + " успешно удалён.";
+        } else {
+            return "Фильм с ID " + id + " не найден.";
         }
-        return true;
     }
+
 
     @Override
     public String des() {

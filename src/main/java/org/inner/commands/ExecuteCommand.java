@@ -12,41 +12,47 @@ import java.util.Scanner;
  */
 public class ExecuteCommand implements Command {
     @Override
-    public boolean doo(ArrayList<Movie> mySet, String s) {
+    public String doo(ArrayList<Movie> mySet, String s) {
         String[] idS = s.split(" ");
         String filename = idS[1];
         ExecuteCommand ex = new ExecuteCommand();
 
-        try {
-            Scanner sc = new Scanner(new File("./scripts/" + filename));//чтение данных
+        try (Scanner sc = new Scanner(new File("./scripts/" + filename))) {
             CommandManager.fileQueue.add(filename);
 
-            while(sc.hasNextLine()) {//пока есть что считывать
-                String line = sc.nextLine();//следующая строка типа String
-                if (line.split(" ").length >= 2 && line.split(" ")[0].equals("execute_script") && CommandManager.fileQueue.contains(line.split(" ")[1])) {
-                    //если длина больше 2: 0 значение 1 слово сама команда, 1 значение 2 слово имя файла
-                    System.out.println("Recursively executing!"); //если, в команде опять открывается файл, то ошибка, чтобы не было рекурсива
-                }else if(line.split(" ").length >= 2 && line.split(" ")[0].equals("execute_script") && !CommandManager.fileQueue.contains(line.split(" ")[1])) {
-                    //
-                    ex.doo(mySet, line);
-                }
-                else if (!line.isEmpty()) {
-                    try {
-                        CommandManager.listOfCommand.get(line.split(" ")[0]).doo(mySet, line);//ищет команду в commandManager
-                        System.out.println();
+            StringBuilder result = new StringBuilder("Выполнение скрипта '" + filename + "':\n");
+
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine().trim();
+                if (line.isEmpty()) continue;
+
+                String[] parts = line.split(" ");
+                String commandName = parts[0];
+
+                if (parts.length >= 2 && commandName.equals("execute_script")) {
+                    String nestedFile = parts[1];
+                    if (CommandManager.fileQueue.contains(nestedFile)) {
+                        result.append("Обнаружена рекурсия при попытке выполнить '")
+                                .append(nestedFile).append("'\n");
+                    } else {
+                        result.append(ex.doo(mySet, line)).append("\n");
                     }
-                    catch (Exception e) {
-                        System.out.println("No such command!");
-                        System.out.println();
+                } else {
+                    try {
+                        String output = CommandManager.listOfCommand.get(commandName).doo(mySet, line);
+                        result.append(output).append("\n");
+                    } catch (Exception e) {
+                        result.append("Неизвестная команда: ").append(commandName).append("\n");
                     }
                 }
             }
-            return true;
-        } catch (FileNotFoundException e) {//нет файла со скриптом
-            System.out.println("Wrong script file!");
-            return false;
+            return result.append("Скрипт '").append(filename).append("' завершён.\n").toString();
+
+        } catch (FileNotFoundException e) {
+            return "Файл '" + filename + "' не найден!";
         }
     }
+
 
     @Override
     public String des() {

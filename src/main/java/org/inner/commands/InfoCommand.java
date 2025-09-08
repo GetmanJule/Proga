@@ -9,17 +9,16 @@ import java.util.ArrayList;
  */
 public class InfoCommand implements Command {
     @Override
-    public boolean doo(ArrayList<Movie> mySet, String s) {
+    public String doo(ArrayList<Movie> mySet, String s) {
         String al = "";
         if (mySet.size() > 0) {
             for (Movie movie : mySet) {
                 al = al + movie.getName() + ", " + movie.getId() + "\n";
             }
-            System.out.println(al);
+            return al;
         }
-        System.out.println("Количество Объектов:  " + mySet.size());
 
-        return true;
+        return "Количество Объектов:  " + mySet.size();
     }
 
     @Override
