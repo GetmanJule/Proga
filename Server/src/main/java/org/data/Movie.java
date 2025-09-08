@@ -11,7 +11,7 @@ public class Movie {
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
-    private java.time.LocalDateTime creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
+    private LocalDateTime creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
     private Long oscarsCount; //Значение поля должно быть больше 0, Поле не может быть null
     private float budget; //Значение поля должно быть больше 0
     private double usaBoxOffice; //Значение поля должно быть больше 0
@@ -22,7 +22,7 @@ public class Movie {
         this.id = this.hashCode();//чтобы точно разными были
         this.name = name;
         this.coordinates = coordinates;
-        this.creationDate = java.time.LocalDateTime.now();//автоматически
+        this.creationDate = LocalDateTime.now();//автоматически
         this.oscarsCount = oscarsCount;
         this.budget = budget;
         this.usaBoxOffice = usaBoxOffice;

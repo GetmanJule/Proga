@@ -10,11 +10,11 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>client</artifactId>
+    <artifactId>server</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
-        <!-- сюда тоже можно добавить зависимости -->
+        <!-- тут можно добавить зависимости -->
     </dependencies>
 
     <build>
@@ -27,7 +27,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.Main</mainClass>
+                            <mainClass>org.main.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
