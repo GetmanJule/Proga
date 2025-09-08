@@ -3,11 +3,7 @@ package org.commands;
 import org.classes.Movie;
 import org.main.Main;
 import org.managerData.XMLManager;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /*

@@ -29,8 +29,8 @@ public class CommandManager {
 
         listOfCommand.put("add", new AddElement());
         listOfCommand.put("remove_by_id", new RemoveByIdCommand());
-        listOfCommand.put("remove_first", new RemoveFirsrtCommand());
-        listOfCommand.put("remove_greater", new RemoveGreatherElement());
+        listOfCommand.put("remove_first", new RemoveFirstCommand());
+        listOfCommand.put("remove_greater", new RemoveGreaterElement());
         listOfCommand.put("update", new UpdateCommand());
 
         listOfCommand.put("execute_script", new ExecuteCommand());

@@ -49,30 +49,6 @@
         <mpaaRating>R</mpaaRating>
     </Movie>
     <Movie>
-        <id>942731712</id>
-        <name>4</name>
-        <coordinates>
-            <x>4.0</x>
-            <y>5</y>
-        </coordinates>
-        <person>
-            <name>4</name>
-            <passportID>8</passportID>
-            <eyeColor>null</eyeColor>
-            <nationality>JAPAN</nationality>
-            <location>
-                <x>null</x>
-                <y>null</y>
-                <name>null</name>
-            </location>
-        </person>
-        <creationDate>02.05.2025 12:47:50</creationDate>
-        <oscarsCount>5</oscarsCount>
-        <budget>5.0</budget>
-        <usaBoxOffice>5.0</usaBoxOffice>
-        <mpaaRating>R</mpaaRating>
-    </Movie>
-    <Movie>
         <id>824318946</id>
         <name>Avatar</name>
         <coordinates>
@@ -97,32 +73,8 @@
         <mpaaRating>PG_13</mpaaRating>
     </Movie>
     <Movie>
-        <id>2047329716</id>
-        <name>Lucy</name>
-        <coordinates>
-            <x>127.0</x>
-            <y>569</y>
-        </coordinates>
-        <person>
-            <name>Andrew</name>
-            <passportID>894521</passportID>
-            <eyeColor>GREEN</eyeColor>
-            <nationality>JAPAN</nationality>
-            <location>
-                <x>145.0</x>
-                <y>685.0</y>
-                <name>LA</name>
-            </location>
-        </person>
-        <creationDate>19.04.2025 09:57:31</creationDate>
-        <oscarsCount>1</oscarsCount>
-        <budget>9652.0</budget>
-        <usaBoxOffice>126587.0</usaBoxOffice>
-        <mpaaRating>NC_17</mpaaRating>
-    </Movie>
-    <Movie>
         <id>610998173</id>
-        <name>Venom</name>
+        <name>venom</name>
         <coordinates>
             <x>147.0</x>
             <y>159</y>

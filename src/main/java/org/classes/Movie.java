@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 /**
  * XMLManager for managing XML DB
  */
-public class Movie {
+public class Movie implements Comparable<Movie> {
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
@@ -131,5 +131,11 @@ public class Movie {
                 + "\nusaBoxOffice: " + this.usaBoxOffice
                 + "\nmpaaRating: " + this.mpaaRating
                 + "\noperator: " + this.operator;
+    }
+
+    @Override
+    public int compareTo(Movie otherMovie) {
+        // БЕЗОПАСНЫЙ СПОСОБ СРАВНЕНИЯ long. Предотвращает ошибку переполнения int.
+        return Long.compare(this.id, otherMovie.id);
     }
 }
