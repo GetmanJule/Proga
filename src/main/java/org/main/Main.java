@@ -1,29 +1,15 @@
 package org.main;
 
 import org.Static.CommandManager;
-import org.classes.Coordinates;
-import org.classes.Location;
 import org.classes.Movie;
-import org.classes.Person;
 import org.commands.Commands;
-import org.enums.Color;
-import org.enums.Country;
-import org.enums.MpaaRating;
 import org.managerData.XMLManager;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-
-/*
-Main Class - eto main class
- */
 
 public class Main {
     public static String filePath = System.getenv("data");//Программа пытается считать путь из переменной окружения системы с именем data
