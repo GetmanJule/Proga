@@ -58,7 +58,7 @@ public class XMLManager {
         try {
 
             Reader in = new InputStreamReader(new FileInputStream(path));//чтение файла
-            int chr = 0;
+            int chr;
 
             while (true){//читает посимвольно, записывает в переменную
                 chr = in.read();
@@ -67,9 +67,6 @@ public class XMLManager {
                 }
                 allData+=(char) chr;
             }
-
-            /*System.out.println(allData);*/
-
         }catch (Exception e){
             System.out.println("File input read error!");
         }

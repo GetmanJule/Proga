@@ -16,8 +16,6 @@ public class ExecuteCommand implements Command {
         String[] idS = s.split(" ");
         String filename = idS[1];
         ExecuteCommand ex = new ExecuteCommand();
-        CommandManager cmd = new CommandManager();
-        Commands c = new Commands();
 
         try {
             Scanner sc = new Scanner(new File("./scripts/" + filename));//чтение данных
