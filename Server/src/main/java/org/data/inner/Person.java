@@ -1,7 +1,7 @@
-package org.data;
+package org.data.inner;
 
-import org.data.enums.Color;
-import org.data.enums.Country;
+import org.data.inner.enums.Color;
+import org.data.inner.enums.Country;
 
 /**
  * XMLManager for managing XML DB

@@ -1,4 +1,4 @@
-package org.data;
+package org.data.inner;
 
 import java.io.Serializable;
 

@@ -1,6 +1,6 @@
 package org.inner.commands;
 
-import org.data.Movie;
+import org.data.inner.Movie;
 import org.main.ServerMain;
 import org.inner.utils.XMLManager;
 

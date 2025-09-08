@@ -1,6 +1,8 @@
-package org.data.enums;
+package org.data.inner.enums;
 
-public enum Color {
+import java.io.Serializable;
+
+public enum Color implements Serializable {
     GREEN,
     RED,
     BLUE,

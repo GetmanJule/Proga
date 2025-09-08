@@ -1,12 +1,17 @@
 package org.outer;
 
-import org.data.Movie;
+import org.data.AnswerDto;
+import org.data.RequestDto;
+import org.data.inner.Movie;
 import org.inner.commands.CommandManager;
 import org.inner.commands.Commands;
-import org.inner.commands.HelpCommand;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -35,12 +40,15 @@ public class Server {
 
             // цикл обработки сообщений
             while ((bytesRead = in.read(buffer)) != -1) {
-                String message = new String(buffer, 0, bytesRead).trim();
+                RequestDto requestDto = (RequestDto) fromBytes(buffer);
+                String message = requestDto.getCommand();
                 System.out.println("Получено: " + message);
 
                 // формируем ответ
                 String response = "Answer from server: " + checkString(message, clientSocket) + "\n";
-                out.write(response.getBytes());
+
+                AnswerDto answerDto = new AnswerDto(null, response);
+                out.write(toBytes(answerDto));
                 out.flush();
 
                 // команда exit закрывает соединение
@@ -79,6 +87,24 @@ public class Server {
             }
         } else {
             return "Ошибка!";
+        }
+    }
+
+    public static Object fromBytes(byte[] data) {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(data);
+             ObjectInputStream ois = new ObjectInputStream(bis)) {
+            return ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return null;
+        }
+    }
+
+    public static byte[] toBytes(Object obj) throws IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(obj);  // сериализуем объект
+            oos.flush();
+            return bos.toByteArray();  // получаем массив байтов
         }
     }
 }

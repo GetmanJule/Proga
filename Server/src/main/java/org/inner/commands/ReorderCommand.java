@@ -1,6 +1,6 @@
 package org.inner.commands;
 
-import org.data.Movie;
+import org.data.inner.Movie;
 
 import java.util.ArrayList;
 import java.util.Collections;

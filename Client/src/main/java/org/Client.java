@@ -1,8 +1,14 @@
 package org;
 
+import org.data.AnswerDto;
+import org.data.RequestDto;
 import org.inner.ConsoleIO;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
@@ -25,7 +31,8 @@ public class Client {
                 System.out.println("Подключено к серверу");
 
                 // буфер
-                ByteBuffer buffer = ByteBuffer.allocate(1024);
+                ByteBuffer buffer = ByteBuffer.allocate(4096);
+
 
                 // цикл отправки/чтения команд
                 while (true) {
@@ -34,7 +41,7 @@ public class Client {
 
                     // отправляем
                     buffer.clear();
-                    buffer.put(msg.getBytes());
+                    buffer.put(toBytes(new RequestDto(null, msg)));
                     buffer.flip();
                     client.write(buffer);
 
@@ -51,8 +58,8 @@ public class Client {
                         System.out.println("Сервер закрыл соединение");
                         break;
                     }
-                    String response = new String(buffer.array(), 0, bytesRead);
-                    System.out.println("Ответ сервера: " + response);
+                    AnswerDto answerDto = (AnswerDto) fromBytes(buffer.array());
+                    System.out.println("Ответ сервера: " + answerDto.getAnswer());
                 }
 
                 client.close();
@@ -63,11 +70,31 @@ public class Client {
                     if (client != null && client.isOpen()) {
                         client.close();
                     }
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) {
+                }
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) {
+                }
             }
+        }
+    }
+
+    public static byte[] toBytes(Object obj) throws IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(obj);  // сериализуем объект
+            oos.flush();
+            return bos.toByteArray();  // получаем массив байтов
+        }
+    }
+
+    public static Object fromBytes(byte[] data) {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(data);
+             ObjectInputStream ois = new ObjectInputStream(bis)) {
+            return ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return null;
         }
     }
 }

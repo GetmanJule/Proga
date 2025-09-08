@@ -1,8 +1,6 @@
 package org.interactive.commands;
 
-import org.data.Movie;
-
-import java.util.ArrayList;
+import org.data.inner.Movie;
 
 /*
 

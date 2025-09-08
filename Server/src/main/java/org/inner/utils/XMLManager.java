@@ -1,12 +1,12 @@
 package org.inner.utils;
 
-import org.data.Coordinates;
-import org.data.Location;
-import org.data.Movie;
-import org.data.Person;
-import org.data.enums.Color;
-import org.data.enums.Country;
-import org.data.enums.MpaaRating;
+import org.data.inner.Coordinates;
+import org.data.inner.Location;
+import org.data.inner.Movie;
+import org.data.inner.Person;
+import org.data.inner.enums.Color;
+import org.data.inner.enums.Country;
+import org.data.inner.enums.MpaaRating;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

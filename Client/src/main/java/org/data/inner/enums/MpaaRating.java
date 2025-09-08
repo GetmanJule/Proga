@@ -1,4 +1,4 @@
-package org.data.enums;
+package org.data.inner.enums;
 
 import java.io.Serializable;
 

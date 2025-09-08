@@ -1,14 +1,13 @@
-package org.data;
+package org.data.inner;
 
-import org.data.enums.MpaaRating;
+import org.data.inner.enums.MpaaRating;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * XMLManager for managing XML DB
  */
-public class Movie implements Serializable {
+public class Movie {
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null

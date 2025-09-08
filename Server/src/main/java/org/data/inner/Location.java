@@ -1,11 +1,9 @@
-package org.data;
-
-import java.io.Serializable;
+package org.data.inner;
 
 /**
  * XMLManager for managing XML DB
  */
-public class Location implements Serializable {
+public class Location {
     private Float x;
     private Double y; //Поле не может быть null
     private String name; //Строка не может быть пустой, Поле может быть null

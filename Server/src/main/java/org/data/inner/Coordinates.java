@@ -1,4 +1,4 @@
-package org.data;
+package org.data.inner;
 /**
  * XMLManager for managing XML DB
  */
