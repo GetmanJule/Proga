@@ -27,7 +27,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.main.Main</mainClass>
+                            <mainClass>org.main.ServerMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

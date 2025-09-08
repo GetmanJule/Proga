@@ -1,7 +1,7 @@
 package org.inner.commands;
 
 import org.data.Movie;
-import org.main.Main;
+import org.main.ServerMain;
 import org.inner.utils.XMLManager;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public class SaveCommand implements Command {
     @Override
     public String doo(ArrayList<Movie> mySet, String s) {
         try {
-            XMLManager.writeToFile(Main.filePath);
+            XMLManager.writeToFile(ServerMain.filePath);
             mySet = XMLManager.getData();
             return "data is saved!" + "\n";
         } catch (Exception e) {

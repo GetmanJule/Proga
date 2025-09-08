@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Commands {
 
-    public String commandsEditor(ArrayList<Movie> mySet, String line) {
+    public String commandsEditor(ArrayList<Movie> mySet, String line) throws NullPointerException {
         String[] cmdStr = line.split(" ");
         return  CommandManager.listOfCommand.get(cmdStr[0]).doo(mySet, line); //ищет команду в commandManager и запускает;
     }

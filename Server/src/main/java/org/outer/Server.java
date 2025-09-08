@@ -3,6 +3,7 @@ package org.outer;
 import org.data.Movie;
 import org.inner.commands.CommandManager;
 import org.inner.commands.Commands;
+import org.inner.commands.HelpCommand;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,7 +70,13 @@ public class Server {
                 }
                 return "Выход из программы";
             }
-            return cmd.commandsEditor(movies, line);
+            try {
+                String ans = cmd.commandsEditor(movies, line);
+                return ans;
+            } catch (NullPointerException e) {
+                return "Некорректная команда, посмотрите в /help";
+
+            }
         } else {
             return "Ошибка!";
         }
