@@ -10,11 +10,12 @@ import java.util.ArrayList;
 
 public class Commands {
 
-    public String commandsEditor(ArrayList<Movie> mySet, String line) throws NullPointerException {
+    public String commandsEditor(ArrayList<Movie> mySet, String line, Movie arg) throws NullPointerException {
         String[] cmdStr = line.split(" ");
         try {
-            String answer = CommandManager.listOfCommand.get(cmdStr[0]).doo(mySet, line);
-            return answer;
+            Command command = CommandManager.listOfCommand.get(cmdStr[0]);
+            command.setArg(arg);
+            return command.doo(mySet, line);
         } catch (NullPointerException e) {
             return "Команда не найдена!";
         }

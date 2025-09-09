@@ -44,7 +44,7 @@ public class Server {
 
                 // Если клиент прислал Movie и команду add, пробуем добавить
                 if ("add".equalsIgnoreCase(message) && movieToAdd != null) {
-                    responseStr = cmd.commandsEditor(movies, message);
+                    responseStr = cmd.commandsEditor(movies, message, movieToAdd);
                 } else if ("exit".equalsIgnoreCase(message)) {
                     responseStr = "Выход из программы";
                     System.out.println("Клиент отключен");
@@ -53,7 +53,7 @@ public class Server {
                     break;
                 } else {
                     // Иные команды
-                    responseStr = cmd.commandsEditor(movies, message);
+                    responseStr = cmd.commandsEditor(movies, message, null);
                 }
 
                 AnswerDto answerDto = new AnswerDto(null, responseStr);
