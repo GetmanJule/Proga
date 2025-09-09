@@ -14,6 +14,7 @@ public class Person implements Serializable {
     private Color eyeColor; //Поле может быть null
     private Country nationality; //Поле не может быть null
     private Location location; //Поле может быть null
+    private static final long serialVersionUID = 1L;
 
     public Person(Person person) {
 

@@ -1,11 +1,14 @@
 package org.data.inner.enums;
 
-public enum Color {
+import java.io.Serializable;
+
+public enum Color implements Serializable {
     GREEN,
     RED,
     BLUE,
     ORANGE,
     BROWN;
+    private static final long serialVersionUID = 1L;
 
     @Override
     public String toString() {

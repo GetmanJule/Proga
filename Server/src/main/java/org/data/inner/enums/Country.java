@@ -1,9 +1,12 @@
 package org.data.inner.enums;
 
-public enum Country {
+import java.io.Serializable;
+
+public enum Country implements Serializable {
     GERMANY,
     THAILAND,
     JAPAN;
+    private static final long serialVersionUID = 1L;
 
     @Override
     public String toString() {

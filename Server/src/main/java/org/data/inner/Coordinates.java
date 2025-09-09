@@ -1,10 +1,14 @@
 package org.data.inner;
+
+import java.io.Serializable;
+
 /**
  * XMLManager for managing XML DB
  */
-public class Coordinates {
+public class Coordinates implements Serializable {
     private float x; //Максимальное значение поля: 906
     private Long y; //Максимальное значение поля: 655, Поле не может быть null
+    private static final long serialVersionUID = 1L;
 
     public Coordinates() {
 

@@ -9,6 +9,7 @@ public class Location implements Serializable {
     private Float x;
     private Double y; //Поле не может быть null
     private String name; //Строка не может быть пустой, Поле может быть null
+    private static final long serialVersionUID = 1L;
 
     public Location() {
 

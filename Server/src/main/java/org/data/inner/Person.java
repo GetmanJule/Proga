@@ -3,15 +3,18 @@ package org.data.inner;
 import org.data.inner.enums.Color;
 import org.data.inner.enums.Country;
 
+import java.io.Serializable;
+
 /**
  * XMLManager for managing XML DB
  */
-public class Person {
+public class Person implements Serializable {
     private String name; //Поле не может быть null, Строка не может быть пустой
     private String passportID; //Значение этого поля должно быть уникальным, Поле не может быть null
     private Color eyeColor; //Поле может быть null
     private Country nationality; //Поле не может быть null
     private Location location; //Поле может быть null
+    private static final long serialVersionUID = 1L;
 
     public Person(Person person) {
 

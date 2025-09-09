@@ -1,11 +1,14 @@
 package org.data.inner.enums;
 
-public enum MpaaRating {
+import java.io.Serializable;
+
+public enum MpaaRating implements Serializable {
     G,
     PG,
     PG_13,
     R,
     NC_17;
+    private static final long serialVersionUID = 1L;
 
     @Override
     public String toString() {

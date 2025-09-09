@@ -18,6 +18,7 @@ public class Movie implements Serializable {
     private double usaBoxOffice; //Значение поля должно быть больше 0
     private MpaaRating mpaaRating; //Поле не может быть null
     private Person operator; //Поле не может быть null
+    private static final long serialVersionUID = 1L;
 
     public Movie(String name, Coordinates coordinates, Long oscarsCount, float budget, double usaBoxOffice, MpaaRating mpaaRating, Person operator) {
         this.id = this.hashCode();//чтобы точно разными были

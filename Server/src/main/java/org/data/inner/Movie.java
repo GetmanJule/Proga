@@ -2,12 +2,13 @@ package org.data.inner;
 
 import org.data.inner.enums.MpaaRating;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * XMLManager for managing XML DB
  */
-public class Movie {
+public class Movie implements Serializable {
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
@@ -17,6 +18,7 @@ public class Movie {
     private double usaBoxOffice; //Значение поля должно быть больше 0
     private MpaaRating mpaaRating; //Поле не может быть null
     private Person operator; //Поле не может быть null
+    private static final long serialVersionUID = 1L;
 
     public Movie(String name, Coordinates coordinates, Long oscarsCount, float budget, double usaBoxOffice, MpaaRating mpaaRating, Person operator) {
         this.id = this.hashCode();//чтобы точно разными были

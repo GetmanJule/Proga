@@ -6,6 +6,7 @@ public enum Country implements Serializable {
     GERMANY,
     THAILAND,
     JAPAN;
+    private static final long serialVersionUID = 1L;
 
     @Override
     public String toString() {

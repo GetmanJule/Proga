@@ -6,17 +6,12 @@ import org.data.inner.Movie;
 import org.inner.commands.CommandManager;
 import org.inner.commands.Commands;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-
 
 public class Server {
 
@@ -32,24 +27,28 @@ public class Server {
             Socket clientSocket = serverSocket.accept();
             System.out.println("Клиент подключен: " + clientSocket.getInetAddress());
 
-            InputStream in = clientSocket.getInputStream();
-            OutputStream out = clientSocket.getOutputStream();
+            // Создаём ObjectInputStream и ObjectOutputStream один раз
+            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
 
-            byte[] buffer = new byte[4096];
-            int bytesRead;
+            // Цикл обработки сообщений
+            while (true) {
+                RequestDto requestDto;
+                try {
+                    requestDto = (RequestDto) in.readObject(); // читаем объект целиком
+                } catch (ClassNotFoundException e) {
+                    System.out.println("Получен неизвестный объект");
+                    continue;
+                }
 
-            // цикл обработки сообщений
-            while ((bytesRead = in.read(buffer)) != -1) {
-                RequestDto requestDto = (RequestDto) fromBytes(buffer);
                 String message = requestDto.getCommand();
-                //todo:пофиксить nullPointer
                 System.out.println("Получено: " + message);
 
                 // формируем ответ
-                String response = "Answer from server: " + checkString(message, clientSocket) + "\n";
+                String responseStr = checkString(message, clientSocket);
+                AnswerDto answerDto = new AnswerDto(null, responseStr);
 
-                AnswerDto answerDto = new AnswerDto(null, response);
-                out.write(toBytes(answerDto));
+                out.writeObject(answerDto); // отправляем объект клиенту
                 out.flush();
 
                 // команда exit закрывает соединение
@@ -58,11 +57,11 @@ public class Server {
                     break;
                 }
             }
+
+            clientSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     private String checkString(String clientRequest, Socket clientSocket) {
@@ -75,37 +74,16 @@ public class Server {
             if (line.equals("exit")) {
                 try {
                     clientSocket.close();
-                } catch (IOException e) {
-                }
+                } catch (IOException e) {}
                 return "Выход из программы";
             }
             try {
-                String ans = cmd.commandsEditor(movies, line);
-                return ans;
+                return cmd.commandsEditor(movies, line);
             } catch (NullPointerException e) {
                 return "Некорректная команда, посмотрите в /help";
-
             }
         } else {
             return "Ошибка!";
-        }
-    }
-
-    public static Object fromBytes(byte[] data) {
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(data);
-             ObjectInputStream ois = new ObjectInputStream(bis)) {
-            return ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            return null;
-        }
-    }
-
-    public static byte[] toBytes(Object obj) throws IOException {
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-             ObjectOutputStream oos = new ObjectOutputStream(bos)) {
-            oos.writeObject(obj);  // сериализуем объект
-            oos.flush();
-            return bos.toByteArray();  // получаем массив байтов
         }
     }
 }
