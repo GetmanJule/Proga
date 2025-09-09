@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.nio.channels.Channels;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SocketChannel;
 
 public class Client {
@@ -36,7 +37,8 @@ public class Client {
                 System.out.println("Сервер недоступен, повтор через 1 секунду...");
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) {
+                }
             }
         }
 
@@ -89,7 +91,7 @@ public class Client {
             }
 
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("Сервер закрыл соединение");
         }
     }
 }

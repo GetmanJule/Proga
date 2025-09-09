@@ -4,8 +4,10 @@ import org.data.AnswerDto;
 import org.data.RequestDto;
 import org.data.inner.Movie;
 import org.inner.commands.Commands;
+import org.inner.commands.SaveCommand;
 import org.inner.utils.XMLManager;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -18,7 +20,6 @@ public class Server {
     private final static int port = 8000;
     private final Commands cmd = new Commands();
     private static final ArrayList<Movie> movies = XMLManager.getData();
-
 
 
     public void connect() {
@@ -38,6 +39,10 @@ public class Server {
                 } catch (ClassNotFoundException e) {
                     System.out.println("Получен неизвестный объект");
                     continue;
+                } catch (EOFException e) {
+                    System.out.println("Клиент завершил сессию, сервер остановлен!");
+                    cmd.commandsEditor(null, "save", null);
+                    break;
                 }
 
                 String message = requestDto.getCommand();

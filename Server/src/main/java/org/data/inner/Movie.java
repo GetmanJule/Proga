@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 /**
  * XMLManager for managing XML DB
  */
-public class Movie implements Serializable {
+public class Movie implements Serializable, Comparable<Movie> {
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
@@ -58,6 +58,7 @@ public class Movie implements Serializable {
     public String getName() {
         return name;
     }
+
     public String getNameUpperCase() {
         return name.toUpperCase();
     }
@@ -125,13 +126,18 @@ public class Movie implements Serializable {
     @Override
     public String toString() {
         return "id: " + this.id
-                + "\nname: " + this.name
-                + "\ncoordinates: " + this.coordinates
-                + "\ncreationDate: " + this.creationDate
-                + "\noscarsCount: " + this.oscarsCount
-                + "\nbudget: " + this.budget
-                + "\nusaBoxOffice: " + this.usaBoxOffice
-                + "\nmpaaRating: " + this.mpaaRating
-                + "\noperator: " + this.operator;
+               + "\nname: " + this.name
+               + "\ncoordinates: " + this.coordinates
+               + "\ncreationDate: " + this.creationDate
+               + "\noscarsCount: " + this.oscarsCount
+               + "\nbudget: " + this.budget
+               + "\nusaBoxOffice: " + this.usaBoxOffice
+               + "\nmpaaRating: " + this.mpaaRating
+               + "\noperator: " + this.operator;
+    }
+
+    @Override
+    public int compareTo(Movie o) {
+        return o.getCreationDate().compareTo(this.creationDate);
     }
 }

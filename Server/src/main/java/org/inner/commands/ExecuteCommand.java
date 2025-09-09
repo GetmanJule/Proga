@@ -14,7 +14,13 @@ public class ExecuteCommand implements Command {
     @Override
     public String doo(ArrayList<Movie> mySet, String s) {
         String[] idS = s.split(" ");
-        String filename = idS[1];
+        String filename;
+        try {
+            filename = idS[1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return "Путь не указан! Попробуйте еще раз!";
+        }
+
         ExecuteCommand ex = new ExecuteCommand();
 
         try (Scanner sc = new Scanner(new File("./scripts/" + filename))) {
