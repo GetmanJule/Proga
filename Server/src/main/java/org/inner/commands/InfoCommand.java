@@ -10,15 +10,12 @@ import java.util.ArrayList;
 public class InfoCommand implements Command {
     @Override
     public String doo(ArrayList<Movie> mySet, String s) {
-        String al = "";
+        StringBuilder builder = new StringBuilder();
+        builder.append("Количество Объектов:  " + mySet.size() + "\n");
         if (mySet.size() > 0) {
-            for (Movie movie : mySet) {
-                al = al + movie.getName() + ", " + movie.getId() + "\n";
-            }
-            return al;
+            mySet.stream().peek(movie -> builder.append(movie.getName() + ", " + movie.getId() + "\n")).toList();
         }
-
-        return "Количество Объектов:  " + mySet.size();
+        return builder.toString();
     }
 
     @Override
