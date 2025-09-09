@@ -1,6 +1,7 @@
 package org.inner.commands;
 
 import org.data.inner.Movie;
+import org.inner.utils.XMLManager;
 
 import java.util.ArrayList;
 
@@ -10,10 +11,11 @@ import java.util.ArrayList;
 public class ClearCommand implements Command {
     @Override
     public String doo(ArrayList<Movie> mySet, String s) {
-        /*XMLManager.dropAll();*/
-        mySet.clear();
-        return new String("data is dropped!");
+        XMLManager.dropAll();  // очищаем данные и файл
+        mySet.clear();         // синхронизируем локальную коллекцию
+        return "data is dropped!";
     }
+
 
     @Override
     public String des() {

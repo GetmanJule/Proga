@@ -40,8 +40,7 @@ public class Server {
                     System.out.println("Получен неизвестный объект");
                     continue;
                 } catch (EOFException e) {
-                    new SaveCommand().doo();
-                    System.out.println("Клиент завершил сессию, сервер остановлен! Данные сохранены");
+                    System.out.println("Клиент завершил сессию");
                     break;
                 }
 
@@ -52,31 +51,22 @@ public class Server {
 
                 if (message == null || message.isEmpty()) {
                     responseStr = "Ошибка: команда пустая!";
-                }
-                // --- add с Movie ---
-                else if ("add".equalsIgnoreCase(message) && movieArg != null) {
+                } else if ("add".equalsIgnoreCase(message) && movieArg != null) {
                     responseStr = cmd.commandsEditor(movies, "add", movieArg);
-                }
-                // --- update с Movie ---
-                else if (message.toLowerCase().startsWith("update") && movieArg != null) {
-                    // Проверка синтаксиса: update {id} или update name/operatorId
+                } else if (message.toLowerCase().startsWith("update") && movieArg != null) {
                     String[] parts = message.split(" ");
                     if (parts.length != 2) {
                         responseStr = "Ошибка: команда update должна иметь вид 'update <id>'";
                     } else {
                         responseStr = cmd.commandsEditor(movies, "update " + parts[1], movieArg);
                     }
-                }
-                // --- exit ---
-                else if ("exit".equalsIgnoreCase(message)) {
+                } else if ("exit".equalsIgnoreCase(message)) {
                     responseStr = "Выход из программы";
                     System.out.println("Клиент отключен");
                     out.writeObject(new AnswerDto(null, responseStr));
                     out.flush();
                     break;
-                }
-                // --- иные команды ---
-                else {
+                } else {
                     responseStr = cmd.commandsEditor(movies, message, null);
                 }
 
@@ -85,10 +75,15 @@ public class Server {
                 out.flush();
             }
 
-
             clientSocket.close();
+
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            // Всегда сохраняем при завершении сервера
+            new SaveCommand().doo();
+            System.out.println("Данные сохранены");
         }
+
     }
 }

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class SaveCommand {
     public String doo() {
         try {
-            //todo: исправить копрование id элементов в xml
             XMLManager.writeToFile(ServerMain.filePath);
             return "data is saved!" + "\n";
         } catch (Exception e) {

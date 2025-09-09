@@ -7,7 +7,6 @@ public class ServerMain {
     public static String filePath = System.getenv("data");//Программа пытается считать путь из переменной окружения системы с именем data
 
     public static void main(String[] args) throws Exception{
-        XMLManager.loadData(filePath);
         Server server = new Server();
         server.connect();
     }
