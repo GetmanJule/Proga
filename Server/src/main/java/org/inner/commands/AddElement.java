@@ -22,7 +22,8 @@ public class AddElement implements Command {
     public String doo(ArrayList<Movie> mySet, String s) {
 
 
-    if (arg == null) {
+
+        if (arg == null) {
             return "Ошибка: не передан объект Movie для добавления!";
         }
 
@@ -38,6 +39,7 @@ public class AddElement implements Command {
         // Добавляем в коллекцию
         mySet.add(arg);
         mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
+        new SaveCommand().doo();
         return "Фильм '" + arg.getName() + "' успешно добавлен!";
     }
 

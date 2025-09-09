@@ -5,6 +5,7 @@ import org.data.RequestDto;
 import org.data.inner.Movie;
 import org.inner.commands.Commands;
 import org.inner.commands.SaveCommand;
+import org.inner.commands.ShowCommand;
 import org.inner.utils.XMLManager;
 
 import java.io.EOFException;
@@ -23,10 +24,11 @@ public class Server {
 
 
     public void connect() {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+        try (ServerSocket serverSocket = new ServerSocket(port);
+             Socket clientSocket = serverSocket.accept();
+        ) {
             System.out.println("Сервер запущен на порту " + port);
 
-            Socket clientSocket = serverSocket.accept();
             System.out.println("Клиент подключен: " + clientSocket.getInetAddress());
 
             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -60,7 +62,7 @@ public class Server {
                     } else {
                         responseStr = cmd.commandsEditor(movies, "update " + parts[1], movieArg);
                     }
-                } else if ("exit".equalsIgnoreCase(message)) {
+                } else if ("exit".equals(message)) {
                     responseStr = "Выход из программы";
                     System.out.println("Клиент отключен");
                     out.writeObject(new AnswerDto(null, responseStr));
@@ -75,13 +77,13 @@ public class Server {
                 out.flush();
             }
 
-            clientSocket.close();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             // Всегда сохраняем при завершении сервера
-            new SaveCommand().doo();
+            SaveCommand saveCommand = new SaveCommand();
+            saveCommand.doo();
             System.out.println("Данные сохранены");
         }
 

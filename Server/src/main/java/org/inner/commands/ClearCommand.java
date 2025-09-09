@@ -13,6 +13,7 @@ public class ClearCommand implements Command {
     public String doo(ArrayList<Movie> mySet, String s) {
         XMLManager.dropAll();  // очищаем данные и файл
         mySet.clear();         // синхронизируем локальную коллекцию
+        new SaveCommand().doo();
         return "data is dropped!";
     }
 
