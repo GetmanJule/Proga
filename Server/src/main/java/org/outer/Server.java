@@ -67,6 +67,8 @@ public class Server {
                     System.out.println("Клиент отключен");
                     out.writeObject(new AnswerDto(null, responseStr));
                     out.flush();
+                    SaveCommand saveCommand = new SaveCommand();
+                    saveCommand.doo();
                     break;
                 } else {
                     responseStr = cmd.commandsEditor(movies, message, null);
