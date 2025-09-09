@@ -1,15 +1,20 @@
-plugins {
-    id 'application'
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'org.main.ServerMain'
+
+dependencies {
+    // Добавь зависимости при необходимости
 }
 
-application {
-    mainClass = 'org.main.Main' // твой класс с public static void main
-}
-
+// Генерация runnable jar
 jar {
     manifest {
         attributes(
-                'Main-Class': application.mainClass
+                'Main-Class': mainClassName
         )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
