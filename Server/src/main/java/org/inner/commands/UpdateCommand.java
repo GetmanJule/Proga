@@ -58,7 +58,7 @@ public class UpdateCommand implements Command {
 
         // Сортировка коллекции по имени
         mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
-        new SaveCommand().doo();
+        new SaveCommand().doo(mySet);
 
         return "Объект с id " + id + " успешно обновлен!";
     }

@@ -39,7 +39,7 @@ public class AddElement implements Command {
         // Добавляем в коллекцию
         mySet.add(arg);
         mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
-        new SaveCommand().doo();
+        new SaveCommand().doo(mySet);
         return "Фильм '" + arg.getName() + "' успешно добавлен!";
     }
 

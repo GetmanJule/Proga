@@ -10,12 +10,27 @@ import java.util.ArrayList;
 
  */
 public class SaveCommand {
-    public String doo() {
+    public boolean doo(ArrayList<Movie> mySet) {
         try {
             XMLManager.writeToFile(ServerMain.filePath);
-            return "data is saved!" + "\n";
+            mySet = XMLManager.getData();
+            System.out.println("data is saved!");
         } catch (Exception e) {
-            return "Error saving data!";
+            System.out.println("Error saving data!");
+            /*System.out.println(e);*/
         }
+
+        return true;
+    }
+    public boolean doo() {
+        try {
+            XMLManager.writeToFile(ServerMain.filePath);
+            System.out.println("data is saved!");
+        } catch (Exception e) {
+            System.out.println("Error saving data!");
+            /*System.out.println(e);*/
+        }
+
+        return true;
     }
 }
