@@ -1,6 +1,7 @@
 package org.inner.commands;
 
 import org.data.inner.Movie;
+import org.inner.utils.XMLManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -37,7 +38,6 @@ public class AddElement implements Command {
         // Добавляем в коллекцию
         mySet.add(arg);
         mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
-
         return "Фильм '" + arg.getName() + "' успешно добавлен!";
     }
 

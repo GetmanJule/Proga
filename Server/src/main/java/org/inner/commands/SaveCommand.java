@@ -13,6 +13,7 @@ public class SaveCommand implements Command {
     @Override
     public String doo(ArrayList<Movie> mySet, String s) {
         try {
+            //todo: исправить копрование id элементов в xml
             XMLManager.writeToFile(ServerMain.filePath);
             mySet = XMLManager.getData();
             return "data is saved!" + "\n";
@@ -20,6 +21,7 @@ public class SaveCommand implements Command {
             return "Error saving data!";
         }
     }
+
 
     @Override
     public String des() {

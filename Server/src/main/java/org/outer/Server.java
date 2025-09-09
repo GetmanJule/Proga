@@ -4,6 +4,7 @@ import org.data.AnswerDto;
 import org.data.RequestDto;
 import org.data.inner.Movie;
 import org.inner.commands.Commands;
+import org.inner.utils.XMLManager;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,7 +17,9 @@ public class Server {
 
     private final static int port = 8000;
     private final Commands cmd = new Commands();
-    private final ArrayList<Movie> movies = new ArrayList<>();
+    private static final ArrayList<Movie> movies = XMLManager.getData();
+
+
 
     public void connect() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {

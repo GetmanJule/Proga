@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<data>
+    <Movie>
+        <id>999966131</id>
+        <name>1</name>
+        <coordinates>
+            <x>1.0</x>
+            <y>1</y>
+        </coordinates>
+        <person>
+            <name>1</name>
+            <passportID>1</passportID>
+            <eyeColor>GREEN</eyeColor>
+            <nationality>GERMANY</nationality>
+            <location>
+                <x>1.0</x>
+                <y>1.0</y>
+                <name>1</name>
+            </location>
+        </person>
+        <creationDate>09.09.2025 11:53:28</creationDate>
+        <oscarsCount>1</oscarsCount>
+        <budget>1.0</budget>
+        <usaBoxOffice>1.0</usaBoxOffice>
+        <mpaaRating>G</mpaaRating>
+    </Movie>
+    <Movie>
+        <id>1867750575</id>
+        <name>1</name>
+        <coordinates>
+            <x>1.0</x>
+            <y>1</y>
+        </coordinates>
+        <person>
+            <name>123213213</name>
+            <passportID>232</passportID>
+            <eyeColor>BLUE</eyeColor>
+            <nationality>THAILAND</nationality>
+            <location>
+                <x>1.0</x>
+                <y>1.0</y>
+                <name>23</name>
+            </location>
+        </person>
+        <creationDate>09.09.2025 13:28:07</creationDate>
+        <oscarsCount>1</oscarsCount>
+        <budget>1.0</budget>
+        <usaBoxOffice>1.0</usaBoxOffice>
+        <mpaaRating>G</mpaaRating>
+    </Movie>
+</data>
