@@ -20,6 +20,7 @@ public class AddElement implements Command {
     @Override
     public String doo(ArrayList<Movie> mySet, String s) {
 
+
     if (arg == null) {
             return "Ошибка: не передан объект Movie для добавления!";
         }

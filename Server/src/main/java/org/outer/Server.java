@@ -38,21 +38,37 @@ public class Server {
                 }
 
                 String message = requestDto.getCommand();
-                Movie movieToAdd = requestDto.getMovie();
+                Movie movieArg = requestDto.getMovie();
 
                 String responseStr;
 
-                // Если клиент прислал Movie и команду add, пробуем добавить
-                if ("add".equalsIgnoreCase(message) && movieToAdd != null) {
-                    responseStr = cmd.commandsEditor(movies, message, movieToAdd);
-                } else if ("exit".equalsIgnoreCase(message)) {
+                if (message == null || message.isEmpty()) {
+                    responseStr = "Ошибка: команда пустая!";
+                }
+                // --- add с Movie ---
+                else if ("add".equalsIgnoreCase(message) && movieArg != null) {
+                    responseStr = cmd.commandsEditor(movies, "add", movieArg);
+                }
+                // --- update с Movie ---
+                else if (message.toLowerCase().startsWith("update") && movieArg != null) {
+                    // Проверка синтаксиса: update {id} или update name/operatorId
+                    String[] parts = message.split(" ");
+                    if (parts.length != 2) {
+                        responseStr = "Ошибка: команда update должна иметь вид 'update <id>'";
+                    } else {
+                        responseStr = cmd.commandsEditor(movies, "update " + parts[1], movieArg);
+                    }
+                }
+                // --- exit ---
+                else if ("exit".equalsIgnoreCase(message)) {
                     responseStr = "Выход из программы";
                     System.out.println("Клиент отключен");
                     out.writeObject(new AnswerDto(null, responseStr));
                     out.flush();
                     break;
-                } else {
-                    // Иные команды
+                }
+                // --- иные команды ---
+                else {
                     responseStr = cmd.commandsEditor(movies, message, null);
                 }
 
@@ -60,6 +76,7 @@ public class Server {
                 out.writeObject(answerDto);
                 out.flush();
             }
+
 
             clientSocket.close();
         } catch (IOException e) {

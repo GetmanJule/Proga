@@ -5,6 +5,7 @@ import org.data.RequestDto;
 import org.data.inner.Movie;
 import org.inner.ConsoleIO;
 import org.inner.commands.ClientCommandManager;
+import org.inner.commands.UpdateCommand;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -34,7 +35,7 @@ public class Client {
             } catch (IOException e) {
                 System.out.println("Сервер недоступен, повтор через 1 секунду...");
                 try {
-                    Thread.sleep(1000); // ждем 1 секунду перед повторной попыткой
+                    Thread.sleep(1000);
                 } catch (InterruptedException ignored) {}
             }
         }
@@ -47,13 +48,33 @@ public class Client {
                 String msg = consoleIO.write();
                 if (msg == null || msg.isEmpty()) continue;
 
-                // Создаём RequestDto
                 RequestDto requestDto = new RequestDto();
-                Movie movie = commandManager.execute(msg);
-                if (movie != null) requestDto.setMovie(movie);
-                requestDto.setCommand(msg);
+                Movie movie = null;
 
-                // Отправляем объект
+                // Проверка на команду update
+                if (msg.toLowerCase().startsWith("update")) {
+                    UpdateCommand updateCommand = new UpdateCommand();
+                    if (!updateCommand.parseCommand(msg)) {
+                        // Некорректный ввод update, просим пользователя заново
+                        System.out.println("Команда update введена неверно. Используйте: update {id}");
+                        continue;
+                    }
+
+                    // Если id корректный, создаем объект Movie для обновления
+                    movie = updateCommand.doo();
+
+                    // Добавляем id в команду, чтобы сервер знал, какой объект обновлять
+                    requestDto.setCommand("update " + updateCommand.getId());
+                    requestDto.setMovie(movie);
+
+                } else {
+                    // Для остальных команд вызываем общий менеджер
+                    movie = commandManager.execute(msg);
+                    if (movie != null) requestDto.setMovie(movie);
+                    requestDto.setCommand(msg);
+                }
+
+                // Отправляем на сервер
                 out.writeObject(requestDto);
                 out.flush();
 
