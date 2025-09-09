@@ -27,19 +27,26 @@ public class Client {
 
     public void connect(ConsoleIO consoleIO) {
         SocketChannel clientChannel = null;
+        int attempts = 0;
+        int maxAttempts = 4; // максимум попыток подключения
 
-        // Ждём, пока сервер станет доступен
-        while (clientChannel == null || !clientChannel.isOpen()) {
+        while ((clientChannel == null || !clientChannel.isOpen()) && attempts < maxAttempts) {
+            attempts++;
             try {
                 clientChannel = SocketChannel.open(new InetSocketAddress(host, port));
                 System.out.println("Подключено к серверу");
             } catch (IOException e) {
-                System.out.println("Сервер недоступен, повтор через 1 секунду...");
+                System.out.println("Сервер недоступен, попытка " + attempts + " из " + maxAttempts);
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ignored) {
                 }
             }
+        }
+
+        if (clientChannel == null || !clientChannel.isOpen()) {
+            System.out.println("Не удалось подключиться к серверу после " + maxAttempts + " попыток. Завершение работы клиента.");
+            return; // выходим из метода
         }
 
         try (SocketChannel channel = clientChannel;
@@ -53,34 +60,26 @@ public class Client {
                 RequestDto requestDto = new RequestDto();
                 Movie movie = null;
 
-                // Проверка на команду update
                 if (msg.toLowerCase().startsWith("update")) {
                     UpdateCommand updateCommand = new UpdateCommand();
                     if (!updateCommand.parseCommand(msg)) {
-                        // Некорректный ввод update, просим пользователя заново
                         System.out.println("Команда update введена неверно. Используйте: update {id}");
                         continue;
                     }
 
-                    // Если id корректный, создаем объект Movie для обновления
                     movie = updateCommand.doo();
-
-                    // Добавляем id в команду, чтобы сервер знал, какой объект обновлять
                     requestDto.setCommand("update " + updateCommand.getId());
                     requestDto.setMovie(movie);
 
                 } else {
-                    // Для остальных команд вызываем общий менеджер
                     movie = commandManager.execute(msg);
                     if (movie != null) requestDto.setMovie(movie);
                     requestDto.setCommand(msg);
                 }
 
-                // Отправляем на сервер
                 out.writeObject(requestDto);
                 out.flush();
 
-                // Читаем ответ
                 AnswerDto answerDto = (AnswerDto) in.readObject();
                 System.out.println("Ответ сервера: " + answerDto.getAnswer());
 
@@ -94,4 +93,5 @@ public class Client {
             System.out.println("Сервер закрыл соединение");
         }
     }
+
 }
