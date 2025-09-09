@@ -12,6 +12,11 @@ public class Commands {
 
     public String commandsEditor(ArrayList<Movie> mySet, String line) throws NullPointerException {
         String[] cmdStr = line.split(" ");
-        return  CommandManager.listOfCommand.get(cmdStr[0]).doo(mySet, line); //ищет команду в commandManager и запускает;
+        try {
+            String answer = CommandManager.listOfCommand.get(cmdStr[0]).doo(mySet, line);
+            return answer;
+        } catch (NullPointerException e) {
+            return "Команда не найдена!";
+        }
     }
 }
