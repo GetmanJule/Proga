@@ -40,8 +40,8 @@ public class Server {
                     System.out.println("Получен неизвестный объект");
                     continue;
                 } catch (EOFException e) {
-                    System.out.println("Клиент завершил сессию, сервер остановлен!");
-                    cmd.commandsEditor(null, "save", null);
+                    new SaveCommand().doo();
+                    System.out.println("Клиент завершил сессию, сервер остановлен! Данные сохранены");
                     break;
                 }
 

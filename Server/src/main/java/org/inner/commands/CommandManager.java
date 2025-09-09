@@ -17,7 +17,6 @@ public class CommandManager {
         listOfCommand.put("info", new InfoCommand());
         listOfCommand.put("show", new ShowCommand());
         listOfCommand.put("clear", new ClearCommand());
-        listOfCommand.put("save", new SaveCommand());
         listOfCommand.put("filter_contains_name", new FilterContainsName());
         listOfCommand.put("filter_starts_with_name", new FilterStartsWithName());
         listOfCommand.put("print_unique_budget", new PrintUniqueBudget());
