@@ -87,6 +87,7 @@ public class Server {
             SaveCommand saveCommand = new SaveCommand();
             saveCommand.doo();
             System.out.println("Данные сохранены");
+            System.exit(0);
         }
 
     }
