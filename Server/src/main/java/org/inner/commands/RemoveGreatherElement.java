@@ -41,7 +41,7 @@ public class RemoveGreatherElement implements Command {
         // оставляем только те элементы, которые <= baseMovie
         List<Movie> newMySet = mySet.stream()
                 .peek(m -> {
-                    if (m.compareTo(baseMovie) > 0) {
+                    if (m.compareTo(baseMovie) < 0) {
                         result.append("Фильм с id ")
                                 .append(m.getId())
                                 .append(" ('")
@@ -49,7 +49,7 @@ public class RemoveGreatherElement implements Command {
                                 .append("') удалён.\n");
                     }
                 })
-                .filter(m -> m.compareTo(baseMovie) <= 0)
+                .filter(m -> m.compareTo(baseMovie) >= 0)
                 .toList();
 
         mySet.clear();

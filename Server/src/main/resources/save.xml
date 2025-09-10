@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <data>
     <Movie>
-        <id>372741534</id>
+        <id>1287454336</id>
         <name>Avatar</name>
         <coordinates>
             <x>167.0</x>
@@ -18,58 +18,34 @@
                 <name>China</name>
             </location>
         </person>
-        <creationDate>10.09.2025 13:24:40</creationDate>
+        <creationDate>10.09.2025 17:31:56</creationDate>
         <oscarsCount>3</oscarsCount>
         <budget>15689.0</budget>
         <usaBoxOffice>5582846.0</usaBoxOffice>
         <mpaaRating>PG_13</mpaaRating>
     </Movie>
     <Movie>
-        <id>602752791</id>
-        <name>Venom</name>
+        <id>948008160</id>
+        <name>Lucy</name>
         <coordinates>
-            <x>147.0</x>
-            <y>159</y>
+            <x>127.0</x>
+            <y>569</y>
         </coordinates>
         <person>
-            <name>Alex</name>
-            <passportID>365659</passportID>
-            <eyeColor>BROWN</eyeColor>
-            <nationality>GERMANY</nationality>
+            <name>Andrew</name>
+            <passportID>894521</passportID>
+            <eyeColor>GREEN</eyeColor>
+            <nationality>JAPAN</nationality>
             <location>
-                <x>123.0</x>
-                <y>147.0</y>
-                <name>London</name>
+                <x>145.0</x>
+                <y>685.0</y>
+                <name>LA</name>
             </location>
         </person>
-        <creationDate>10.09.2025 13:24:40</creationDate>
-        <oscarsCount>0</oscarsCount>
-        <budget>1427.0</budget>
-        <usaBoxOffice>6322342.0</usaBoxOffice>
-        <mpaaRating>NC_17</mpaaRating>
-    </Movie>
-    <Movie>
-        <id>1341578677</id>
-        <name>2</name>
-        <coordinates>
-            <x>1.0</x>
-            <y>1</y>
-        </coordinates>
-        <person>
-            <name>1</name>
-            <passportID>1</passportID>
-            <eyeColor>null</eyeColor>
-            <nationality>GERMANY</nationality>
-            <location>
-                <x>null</x>
-                <y>null</y>
-                <name>null</name>
-            </location>
-        </person>
-        <creationDate>10.09.2025 13:24:40</creationDate>
+        <creationDate>10.09.2025 17:31:56</creationDate>
         <oscarsCount>1</oscarsCount>
-        <budget>1.0</budget>
-        <usaBoxOffice>1.0</usaBoxOffice>
-        <mpaaRating>G</mpaaRating>
+        <budget>9652.0</budget>
+        <usaBoxOffice>1265287.0</usaBoxOffice>
+        <mpaaRating>NC_17</mpaaRating>
     </Movie>
 </data>
