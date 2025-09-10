@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class ServerMain {
-    public static String filePath = System.getenv("data");//Программа пытается считать путь из переменной окружения системы с именем data
+    public static String filePath = "C:\\Users\\user\\Desktop\\lab5\\server\\src\\main\\resources\\save.xml";//Программа пытается считать путь из переменной окружения системы с именем data
 
     public static void main(String[] args) throws IOException {
 

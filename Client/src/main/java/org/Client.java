@@ -18,7 +18,7 @@ import java.nio.channels.SocketChannel;
 public class Client {
 
     private final static String host = "localhost";
-    private final static int port = 8000;
+    private final static int port = 45887;
     private final ClientCommandManager commandManager;
 
     public Client(ClientCommandManager commandManager) {

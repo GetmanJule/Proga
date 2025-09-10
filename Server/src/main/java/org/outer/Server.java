@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class Server {
 
-    private final static int port = 8000;
+    private final static int port = 45887;
     private final Commands cmd = new Commands();
     private static final ArrayList<Movie> movies = XMLManager.getData();
 

@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <data>
     <Movie>
-        <id>1287454336</id>
-        <name>Avatar</name>
+        <id>1713544456</id>
+        <name>klp</name>
         <coordinates>
-            <x>167.0</x>
-            <y>123</y>
+            <x>25.0</x>
+            <y>45</y>
         </coordinates>
         <person>
-            <name>James</name>
-            <passportID>356178</passportID>
-            <eyeColor>RED</eyeColor>
-            <nationality>THAILAND</nationality>
+            <name>456</name>
+            <passportID>456</passportID>
+            <eyeColor>null</eyeColor>
+            <nationality>JAPAN</nationality>
             <location>
-                <x>198.0</x>
-                <y>164.0</y>
-                <name>China</name>
+                <x>null</x>
+                <y>null</y>
+                <name>null</name>
             </location>
         </person>
-        <creationDate>10.09.2025 17:31:56</creationDate>
-        <oscarsCount>3</oscarsCount>
-        <budget>15689.0</budget>
-        <usaBoxOffice>5582846.0</usaBoxOffice>
-        <mpaaRating>PG_13</mpaaRating>
+        <creationDate>10.09.2025 21:06:21</creationDate>
+        <oscarsCount>21</oscarsCount>
+        <budget>1.0</budget>
+        <usaBoxOffice>1.0</usaBoxOffice>
+        <mpaaRating>PG</mpaaRating>
     </Movie>
     <Movie>
-        <id>948008160</id>
+        <id>346828943</id>
         <name>Lucy</name>
         <coordinates>
             <x>127.0</x>
@@ -42,10 +42,34 @@
                 <name>LA</name>
             </location>
         </person>
-        <creationDate>10.09.2025 17:31:56</creationDate>
+        <creationDate>10.09.2025 21:04:19</creationDate>
         <oscarsCount>1</oscarsCount>
         <budget>9652.0</budget>
         <usaBoxOffice>1265287.0</usaBoxOffice>
+        <mpaaRating>NC_17</mpaaRating>
+    </Movie>
+    <Movie>
+        <id>212082679</id>
+        <name>Venom</name>
+        <coordinates>
+            <x>147.0</x>
+            <y>159</y>
+        </coordinates>
+        <person>
+            <name>Alex</name>
+            <passportID>365659</passportID>
+            <eyeColor>BROWN</eyeColor>
+            <nationality>GERMANY</nationality>
+            <location>
+                <x>123.0</x>
+                <y>147.0</y>
+                <name>London</name>
+            </location>
+        </person>
+        <creationDate>10.09.2025 21:04:19</creationDate>
+        <oscarsCount>0</oscarsCount>
+        <budget>1427.0</budget>
+        <usaBoxOffice>6322342.0</usaBoxOffice>
         <mpaaRating>NC_17</mpaaRating>
     </Movie>
 </data>
