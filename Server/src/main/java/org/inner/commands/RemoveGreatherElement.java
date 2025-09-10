@@ -4,6 +4,8 @@ import org.data.inner.Movie;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /*
 
@@ -25,17 +27,19 @@ public class RemoveGreatherElement implements Command {
         }
 
         StringBuilder result = new StringBuilder();
-        ArrayList<Movie> newMySet = new ArrayList<>();
+        List<Movie> newMySet;
 
-        for (Movie m : mySet) {
-            if (m.getId() >= id) {
-                result.append("Фильм с id ").append(m.getId())
-                        .append(" ('").append(m.getName()).append("') удалён.\n");
-            } else {
-                newMySet.add(m);
-            }
-        }
-
+        newMySet = mySet.stream()
+                .peek(m -> {
+                    if (m.getId() >= id) {
+                        result.append("Фильм с id ")
+                                .append(m.getId())
+                                .append(" ('").append(m.getName())
+                                .append("') удалён.\n");
+                    }
+                })
+                .filter(m -> m.getId() < id) // оставляем только нужные
+                .toList();
         mySet.clear();
         mySet.addAll(newMySet);
         mySet.sort(Comparator.comparing(Movie::getNameUpperCase));

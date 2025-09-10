@@ -10,14 +10,18 @@ public class PrintUniqueBudget implements Command {
     public String doo(ArrayList<Movie> mySet, String s) {
         ArrayList<Float> tmp = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
-        if (mySet.size() != 0) {
-            for (Movie movie : mySet) {
-                if (!isInArray(tmp, movie.getBudget())) {
-                    builder.append(movie.getId() + " is unique: " + movie.getBudget() + "\n");
-                    tmp.add(movie.getBudget());
-                }
-            }
+        if (!mySet.isEmpty()) {
+            mySet.stream()
+                    .filter(movie -> !isInArray(tmp, movie.getBudget()))
+                    .forEach(movie -> {
+                        builder.append(movie.getId())
+                                .append(" is unique: ")
+                                .append(movie.getBudget())
+                                .append("\n");
+                        tmp.add(movie.getBudget());
+                    });
         }
+
         return builder.toString();
     }
 

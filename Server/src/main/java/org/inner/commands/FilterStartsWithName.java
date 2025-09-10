@@ -16,11 +16,7 @@ public class FilterStartsWithName implements Command {
         StringBuilder builder = new StringBuilder();
 
         if (mySet.size() != 0) {
-            for (Movie movie : mySet) {
-                if (movie.getName().startsWith(s.split(" ")[1])) {
-                    builder.append(movie.getName() + " start with " + s + "\n");
-                }
-            }
+            mySet.stream().filter(movie -> movie.getName().startsWith(s.split(" ")[1])).forEach(movie -> builder.append(movie.getName() + " start with " + s + "\n"));
             return builder.toString();
         } else {
             return "No movies found!";
