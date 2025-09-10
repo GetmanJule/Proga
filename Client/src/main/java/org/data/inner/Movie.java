@@ -21,7 +21,6 @@ public class Movie implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public Movie(String name, Coordinates coordinates, Long oscarsCount, float budget, double usaBoxOffice, MpaaRating mpaaRating, Person operator) {
-        this.id = this.hashCode();//чтобы точно разными были
         this.name = name;
         this.coordinates = coordinates;
         this.creationDate = LocalDateTime.now();//автоматически

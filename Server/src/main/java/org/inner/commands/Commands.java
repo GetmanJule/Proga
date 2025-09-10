@@ -14,6 +14,7 @@ public class Commands {
         String[] cmdStr = line.split(" ");
         try {
             Command command = CommandManager.listOfCommand.get(cmdStr[0]);
+            if (arg != null) arg.setId(arg.hashCode());
             command.setArg(arg);
             return command.doo(mySet, line);
         } catch (NullPointerException e) {
