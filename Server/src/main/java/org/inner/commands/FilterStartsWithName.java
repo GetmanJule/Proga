@@ -3,6 +3,7 @@ package org.inner.commands;
 import org.data.inner.Movie;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /*
 
@@ -14,9 +15,8 @@ public class FilterStartsWithName implements Command {
             return "Please enter the name of the movie";
         }
         StringBuilder builder = new StringBuilder();
-
-        if (mySet.size() != 0) {
-            mySet.stream().filter(movie -> movie.getName().startsWith(s.split(" ")[1])).forEach(movie -> builder.append(movie.getName() + " start with " + s + "\n"));
+        List<Movie> movies = mySet.stream().filter(movie -> movie.getName().startsWith(s.split(" ")[1])).peek(movie -> builder.append(movie.getName() + " start with " + s + "\n")).toList();
+        if (movies.size() != 0) {
             return builder.toString();
         } else {
             return "No movies found!";
