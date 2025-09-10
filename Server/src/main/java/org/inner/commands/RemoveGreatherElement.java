@@ -26,26 +26,40 @@ public class RemoveGreatherElement implements Command {
             return "Коллекция пуста, нечего удалять.";
         }
 
-        StringBuilder result = new StringBuilder();
-        List<Movie> newMySet;
+        // ищем элемент с таким id
+        Movie baseMovie = mySet.stream()
+                .filter(m -> m.getId() == id)
+                .findFirst()
+                .orElse(null);
 
-        newMySet = mySet.stream()
+        if (baseMovie == null) {
+            return "Элемент с id " + id + " не найден.";
+        }
+
+        StringBuilder result = new StringBuilder();
+
+        // оставляем только те элементы, которые <= baseMovie
+        List<Movie> newMySet = mySet.stream()
                 .peek(m -> {
-                    if (m.getId() >= id) {
+                    if (m.compareTo(baseMovie) > 0) {
                         result.append("Фильм с id ")
                                 .append(m.getId())
-                                .append(" ('").append(m.getName())
+                                .append(" ('")
+                                .append(m.getName())
                                 .append("') удалён.\n");
                     }
                 })
-                .filter(m -> m.getId() < id) // оставляем только нужные
+                .filter(m -> m.compareTo(baseMovie) <= 0)
                 .toList();
+
         mySet.clear();
         mySet.addAll(newMySet);
+
+        // сортируем по имени (как у тебя было)
         mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
 
         if (result.length() == 0) {
-            return "Фильмов с id >= " + id + " не найдено.";
+            return "Фильмов больше элемента с id " + id + " не найдено.";
         } else {
             return result.toString().trim();
         }
