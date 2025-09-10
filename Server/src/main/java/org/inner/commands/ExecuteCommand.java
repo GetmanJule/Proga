@@ -1,6 +1,12 @@
 package org.inner.commands;
 
+import org.data.inner.Coordinates;
+import org.data.inner.Location;
 import org.data.inner.Movie;
+import org.data.inner.Person;
+import org.data.inner.enums.Color;
+import org.data.inner.enums.Country;
+import org.data.inner.enums.MpaaRating;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,7 +51,15 @@ public class ExecuteCommand implements Command {
                     }
                 } else {
                     try {
-                        String output = CommandManager.listOfCommand.get(commandName).doo(mySet, line);
+                        Command command = CommandManager.listOfCommand.get(commandName);
+                        try {
+                            Movie movie = getMovie(line);
+                            command.setArg(movie);
+                        }catch (ArrayIndexOutOfBoundsException e){
+                        }
+
+
+                        String output = command.doo(mySet, line);
                         result.append(output).append("\n");
                     } catch (Exception e) {
                         result.append("Неизвестная команда: ").append(commandName).append("\n");
@@ -57,6 +71,15 @@ public class ExecuteCommand implements Command {
         } catch (FileNotFoundException e) {
             return "Файл '" + filename + "' не найден!";
         }
+    }
+
+    private static Movie getMovie(String line) {
+        String[] all = line.split(" ");
+        Movie movie = new Movie(all[1], new Coordinates(Float.parseFloat(all[2]), Long.parseLong(all[3])),
+                Long.parseLong(all[4]), Float.parseFloat(all[5]), Double.parseDouble(all[6]), MpaaRating.getRating(Integer.parseInt(all[7])),
+                new Person(all[8], all[9], Color.getColorByValue(Integer.parseInt(all[10])), Country.getCountryByValue(Integer.parseInt(all[11])),
+                        new Location(Float.parseFloat(all[12]), Double.parseDouble(all[13]), all[14])));
+        return movie;
     }
 
 

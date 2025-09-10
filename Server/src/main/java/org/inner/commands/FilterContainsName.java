@@ -16,11 +16,7 @@ public class FilterContainsName implements Command {
         StringBuilder builder = new StringBuilder();
 
         if (mySet.size() != 0) {
-            for (Movie movie : mySet) {//перебор во всех фильмах
-                if (movie.getName().contains(s.split(" ")[1])) {
-                    builder.append(movie.getName() + " contains " + s+"\n");
-                }
-            }
+            mySet.stream().filter(movie -> movie.getName().contains(s.split(" ")[1])).forEach(movie -> builder.append(movie.getName() + " contains " + s + "\n"));
             return builder.toString();
         } else {
             return "No movies found!";
