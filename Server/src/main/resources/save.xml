@@ -1,30 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <data>
     <Movie>
-        <id>1341578677</id>
-        <name>2</name>
-        <coordinates>
-            <x>1.0</x>
-            <y>1</y>
-        </coordinates>
-        <person>
-            <name>1</name>
-            <passportID>1</passportID>
-            <eyeColor>null</eyeColor>
-            <nationality>GERMANY</nationality>
-            <location>
-                <x>null</x>
-                <y>null</y>
-                <name>null</name>
-            </location>
-        </person>
-        <creationDate>10.09.2025 13:24:40</creationDate>
-        <oscarsCount>1</oscarsCount>
-        <budget>1.0</budget>
-        <usaBoxOffice>1.0</usaBoxOffice>
-        <mpaaRating>G</mpaaRating>
-    </Movie>
-    <Movie>
         <id>372741534</id>
         <name>Avatar</name>
         <coordinates>
@@ -71,5 +47,29 @@
         <budget>1427.0</budget>
         <usaBoxOffice>6322342.0</usaBoxOffice>
         <mpaaRating>NC_17</mpaaRating>
+    </Movie>
+    <Movie>
+        <id>1341578677</id>
+        <name>2</name>
+        <coordinates>
+            <x>1.0</x>
+            <y>1</y>
+        </coordinates>
+        <person>
+            <name>1</name>
+            <passportID>1</passportID>
+            <eyeColor>null</eyeColor>
+            <nationality>GERMANY</nationality>
+            <location>
+                <x>null</x>
+                <y>null</y>
+                <name>null</name>
+            </location>
+        </person>
+        <creationDate>10.09.2025 13:24:40</creationDate>
+        <oscarsCount>1</oscarsCount>
+        <budget>1.0</budget>
+        <usaBoxOffice>1.0</usaBoxOffice>
+        <mpaaRating>G</mpaaRating>
     </Movie>
 </data>

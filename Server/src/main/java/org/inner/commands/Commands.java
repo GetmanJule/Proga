@@ -13,12 +13,6 @@ public class Commands {
 
     public String commandsEditor(ArrayList<Movie> mySet, String line, Movie arg) throws NullPointerException {
         String[] cmdStr = line.split(" ");
-        mySet.sort(new Comparator<Movie>() {
-            @Override
-            public int compare(Movie o1, Movie o2) {
-                return o1.compareTo(o2);
-            }
-        });
         try {
             Command command = CommandManager.listOfCommand.get(cmdStr[0]);
             if (arg != null) arg.setId(arg.hashCode());

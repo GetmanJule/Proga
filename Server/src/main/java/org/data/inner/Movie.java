@@ -138,6 +138,6 @@ public class Movie implements Serializable, Comparable<Movie> {
 
     @Override
     public int compareTo(Movie o) {
-        return o.getCreationDate().compareTo(this.creationDate);
+        return Long.compare(o.id, this.id);
     }
 }

@@ -16,9 +16,6 @@ public class ServerMain {
 
     public static void main(String[] args) throws IOException {
 
-        if (filePath == null) {
-            filePath = "Server/src/main/resources/save.xml";
-        }
         XMLManager xmlManager = new XMLManager();
         ArrayList<Movie> movies = new ArrayList<>();
         xmlManager.setData(movies);
@@ -26,6 +23,7 @@ public class ServerMain {
         try {
             XMLManager.loadData(filePath);//вызываем фуекцию для использования файла
             movies = XMLManager.getData();
+            movies.sort(Movie::compareTo);
             System.out.println("All movies is loaded!");
         } catch (Exception e) {
             e.printStackTrace();
@@ -39,11 +37,11 @@ public class ServerMain {
         }).start();
 
         ConsoleIO consoleIO = new ConsoleIO();
-        while (true){
+        while (true) {
             if (consoleIO.write().equals("save")) {
                 new SaveCommand().doo();
                 System.out.println("Коллекция сохранена");
-            }else {
+            } else {
                 System.out.println("Неизвестная команда");
             }
         }
