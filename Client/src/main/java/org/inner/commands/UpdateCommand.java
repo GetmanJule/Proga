@@ -17,7 +17,6 @@ public class UpdateCommand implements Command {
     public boolean parseCommand(String input) {
         // Проверка, что введено update {id}
         if (input == null || !input.matches("^update\\s+\\d+$")) {
-            System.out.println("Ошибка: некорректный ввод! Используйте: update {id}");
             return false;
         }
         this.id = Long.parseLong(input.split("\\s+")[1]);
@@ -32,7 +31,7 @@ public class UpdateCommand implements Command {
     public Movie doo() {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("=== Создание нового объекта Movie для обновления ===");
+        System.out.println("=== Обновление объекта Movie ===");
 
         // === Movie Name ===
         String name = "";
@@ -107,11 +106,19 @@ public class UpdateCommand implements Command {
         String passportId = sc.nextLine().trim();
 
         Color perColorEye = null;
-        while (perColorEye == null) {
-            System.out.print("Enter eyeColor (1-GREEN,2-RED,3-BLUE,4-ORANGE,5-BROWN): ");
+        while (true) {
+            System.out.print("Enter eyeColor (1-GREEN,2-RED,3-BLUE,4-ORANGE,5-BROWN, Enter - skip): ");
+            String input = sc.nextLine().trim();
+            if (input.isEmpty()) {
+                // пользователь не ввёл цвет глаз → оставляем null
+                break;
+            }
             try {
-                perColorEye = Color.getColorByValue(Integer.parseInt(sc.nextLine()));
-            } catch (Exception ignored) {}
+                perColorEye = Color.getColorByValue(Integer.parseInt(input));
+                break;
+            } catch (Exception ignored) {
+                System.out.println("Некорректный ввод! Введите число от 1 до 5 или Enter для пропуска.");
+            }
         }
 
         Country nationality = null;

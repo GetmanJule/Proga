@@ -2,26 +2,26 @@
 <data>
     <Movie>
         <id>1482726947</id>
-        <name>1</name>
+        <name>2</name>
         <coordinates>
-            <x>1.0</x>
-            <y>1</y>
+            <x>2.0</x>
+            <y>2</y>
         </coordinates>
         <person>
             <name>1</name>
             <passportID>1</passportID>
-            <eyeColor>GREEN</eyeColor>
-            <nationality>GERMANY</nationality>
+            <eyeColor>null</eyeColor>
+            <nationality>THAILAND</nationality>
             <location>
-                <x>1.0</x>
-                <y>1.0</y>
-                <name>1</name>
+                <x>null</x>
+                <y>null</y>
+                <name>null</name>
             </location>
         </person>
         <creationDate>10.09.2025 12:35:12</creationDate>
-        <oscarsCount>1</oscarsCount>
-        <budget>1.0</budget>
-        <usaBoxOffice>1.0</usaBoxOffice>
-        <mpaaRating>G</mpaaRating>
+        <oscarsCount>2</oscarsCount>
+        <budget>2.0</budget>
+        <usaBoxOffice>2.0</usaBoxOffice>
+        <mpaaRating>PG</mpaaRating>
     </Movie>
 </data>
