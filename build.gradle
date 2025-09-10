@@ -3,11 +3,6 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
 
 group = 'org.example'
 version = '1.0-SNAPSHOT'
@@ -15,7 +10,11 @@ version = '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
 }
-
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
 tasks.register('lab5', Jar) {
     archiveClassifier = 'lab5'
 
