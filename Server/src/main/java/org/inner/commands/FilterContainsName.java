@@ -3,6 +3,7 @@ package org.inner.commands;
 import org.data.inner.Movie;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /*
 
@@ -14,9 +15,9 @@ public class FilterContainsName implements Command {
             return "Please enter the name of the movie";
         }
         StringBuilder builder = new StringBuilder();
+        List<Movie> movies = mySet.stream().filter(movie -> movie.getName().contains(s.split(" ")[1])).peek(movie -> builder.append(movie.getName() + " contains " + s + "\n")).toList();
 
-        if (mySet.size() != 0) {
-            mySet.stream().filter(movie -> movie.getName().contains(s.split(" ")[1])).forEach(movie -> builder.append(movie.getName() + " contains " + s + "\n"));
+        if (movies.size() != 0) {
             return builder.toString();
         } else {
             return "No movies found!";

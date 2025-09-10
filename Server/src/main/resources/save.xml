@@ -2,51 +2,27 @@
 <data>
     <Movie>
         <id>1341578677</id>
-        <name>Lucy</name>
+        <name>2</name>
         <coordinates>
-            <x>127.0</x>
-            <y>569</y>
+            <x>1.0</x>
+            <y>1</y>
         </coordinates>
         <person>
-            <name>Andrew</name>
-            <passportID>894521</passportID>
-            <eyeColor>GREEN</eyeColor>
-            <nationality>JAPAN</nationality>
+            <name>1</name>
+            <passportID>1</passportID>
+            <eyeColor>null</eyeColor>
+            <nationality>GERMANY</nationality>
             <location>
-                <x>145.0</x>
-                <y>685.0</y>
-                <name>LA</name>
+                <x>null</x>
+                <y>null</y>
+                <name>null</name>
             </location>
         </person>
         <creationDate>10.09.2025 13:24:40</creationDate>
         <oscarsCount>1</oscarsCount>
-        <budget>9652.0</budget>
-        <usaBoxOffice>1265287.0</usaBoxOffice>
-        <mpaaRating>NC_17</mpaaRating>
-    </Movie>
-    <Movie>
-        <id>602752791</id>
-        <name>Venom</name>
-        <coordinates>
-            <x>147.0</x>
-            <y>159</y>
-        </coordinates>
-        <person>
-            <name>Alex</name>
-            <passportID>365659</passportID>
-            <eyeColor>BROWN</eyeColor>
-            <nationality>GERMANY</nationality>
-            <location>
-                <x>123.0</x>
-                <y>147.0</y>
-                <name>London</name>
-            </location>
-        </person>
-        <creationDate>10.09.2025 13:24:40</creationDate>
-        <oscarsCount>0</oscarsCount>
-        <budget>1427.0</budget>
-        <usaBoxOffice>6322342.0</usaBoxOffice>
-        <mpaaRating>NC_17</mpaaRating>
+        <budget>1.0</budget>
+        <usaBoxOffice>1.0</usaBoxOffice>
+        <mpaaRating>G</mpaaRating>
     </Movie>
     <Movie>
         <id>372741534</id>
@@ -71,5 +47,29 @@
         <budget>15689.0</budget>
         <usaBoxOffice>5582846.0</usaBoxOffice>
         <mpaaRating>PG_13</mpaaRating>
+    </Movie>
+    <Movie>
+        <id>602752791</id>
+        <name>Venom</name>
+        <coordinates>
+            <x>147.0</x>
+            <y>159</y>
+        </coordinates>
+        <person>
+            <name>Alex</name>
+            <passportID>365659</passportID>
+            <eyeColor>BROWN</eyeColor>
+            <nationality>GERMANY</nationality>
+            <location>
+                <x>123.0</x>
+                <y>147.0</y>
+                <name>London</name>
+            </location>
+        </person>
+        <creationDate>10.09.2025 13:24:40</creationDate>
+        <oscarsCount>0</oscarsCount>
+        <budget>1427.0</budget>
+        <usaBoxOffice>6322342.0</usaBoxOffice>
+        <mpaaRating>NC_17</mpaaRating>
     </Movie>
 </data>

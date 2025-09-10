@@ -49,8 +49,13 @@ public class UpdateCommand implements Command {
             System.out.print("Enter corX (max 906): ");
             try {
                 corX = Float.parseFloat(sc.nextLine());
-                if (corX > 906) corX = null;
-            } catch (Exception ignored) {}
+                if (corX > 906) {
+                    System.out.println("X не может быть > 906!");
+                    corX = null;
+                }
+            } catch (Exception ignored) {
+                System.out.println("Некорректный ввод!");
+            }
         }
 
         Long corY = null;
@@ -58,35 +63,46 @@ public class UpdateCommand implements Command {
             System.out.print("Enter corY (max 655): ");
             try {
                 corY = Long.parseLong(sc.nextLine());
-                if (corY > 655) corY = null;
-            } catch (Exception ignored) {}
+                if (corY > 655) {
+                    System.out.println("Y не может быть > 655!");
+                    corY = null;
+                }
+            } catch (Exception ignored) {
+                System.out.println("Некорректный ввод!");
+            }
         }
 
         // === OscarsCount ===
-        Long oscar = 0L;
-        while (oscar <= 0) {
+        Long oscar = null;
+        while (oscar == null || oscar <= 0) {
             System.out.print("Enter oscarsCount (>0): ");
             try {
                 oscar = Long.parseLong(sc.nextLine());
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+                System.out.println("Некорректный ввод!");
+            }
         }
 
         // === Budget ===
-        Float budget = 0F;
-        while (budget <= 0) {
+        Float budget = null;
+        while (budget == null || budget <= 0) {
             System.out.print("Enter budget (>0): ");
             try {
                 budget = Float.parseFloat(sc.nextLine());
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+                System.out.println("Некорректный ввод!");
+            }
         }
 
         // === USA Box Office ===
-        Double usaBoxOffice = 0D;
-        while (usaBoxOffice <= 0) {
+        Double usaBoxOffice = null;
+        while (usaBoxOffice == null || usaBoxOffice <= 0) {
             System.out.print("Enter usaBoxOffice (>0): ");
             try {
                 usaBoxOffice = Double.parseDouble(sc.nextLine());
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+                System.out.println("Некорректный ввод!");
+            }
         }
 
         // === MpaaRating ===
@@ -95,22 +111,37 @@ public class UpdateCommand implements Command {
             System.out.print("Enter mpaaRating (1-G,2-PG,3-PG_13,4-R,5-NC_17): ");
             try {
                 mpaaRating = MpaaRating.getRating(Integer.parseInt(sc.nextLine()));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+                System.out.println("Некорректный ввод!");
+            }
         }
 
         // === Person ===
-        System.out.print("Enter Person Name: ");
-        String persName = sc.nextLine().trim();
+        String persName = "";
+        while (persName.isEmpty()) {
+            System.out.print("Enter Person Name: ");
+            persName = sc.nextLine().trim();
+            if (persName.isEmpty()) {
+                System.out.println("Имя не может быть пустым!");
+            }
+        }
 
-        System.out.print("Enter Person passportId: ");
-        String passportId = sc.nextLine().trim();
+        String passportId = "";
+        while (passportId.isEmpty()) {
+            System.out.print("Enter Person passportId: ");
+            passportId = sc.nextLine().trim();
+            if (passportId.isEmpty()) {
+                System.out.println("PassportID не может быть пустым!");
+            }
+        }
 
+        // === EyeColor (допустим null) ===
         Color perColorEye = null;
         while (true) {
             System.out.print("Enter eyeColor (1-GREEN,2-RED,3-BLUE,4-ORANGE,5-BROWN, Enter - skip): ");
             String input = sc.nextLine().trim();
             if (input.isEmpty()) {
-                // пользователь не ввёл цвет глаз → оставляем null
+                // разрешаем null
                 break;
             }
             try {
@@ -121,12 +152,15 @@ public class UpdateCommand implements Command {
             }
         }
 
+        // === Nationality ===
         Country nationality = null;
         while (nationality == null) {
             System.out.print("Enter nationality (1-GERMANY,2-THAILAND,3-JAPAN): ");
             try {
                 nationality = Country.getCountryByValue(Integer.parseInt(sc.nextLine()));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+                System.out.println("Некорректный ввод!");
+            }
         }
 
         // === Location ===
@@ -155,4 +189,5 @@ public class UpdateCommand implements Command {
 
         return movie;
     }
+
 }
