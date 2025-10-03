@@ -3,7 +3,6 @@ package org.inner.commands;
 
 import org.data.inner.Movie;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 

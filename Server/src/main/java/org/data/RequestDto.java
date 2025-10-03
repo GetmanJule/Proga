@@ -14,6 +14,9 @@ public class RequestDto implements Serializable {
         this.command = command;
     }
 
+    public RequestDto() {
+    }
+
     public Movie getMovie() {
         return movie;
     }
