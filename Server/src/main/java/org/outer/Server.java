@@ -23,76 +23,83 @@ public class Server {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Сервер запущен на порту " + port);
 
-            try (Socket clientSocket = serverSocket.accept();
-                 DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
-                 DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream())) {
+            // основной цикл — сервер живет постоянно
+            while (true) {
+                System.out.println("Ожидание подключения клиента...");
+                try (Socket clientSocket = serverSocket.accept();
+                     DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
+                     DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream())) {
 
-                System.out.println("Клиент подключен: " + clientSocket.getInetAddress());
+                    System.out.println("Клиент подключен: " + clientSocket.getInetAddress());
 
-                while (true) {
-                    // --- Чтение объекта ---
-                    int length;
-                    try {
-                        length = dis.readInt(); // 4 байта длины
-                    } catch (EOFException | SocketException e) {
-                        System.out.println("Клиент завершил сессию");
-                        break;
-                    }
+                    while (true) {
+                        // --- Чтение объекта ---
+                        int length;
+                        try {
+                            length = dis.readInt(); // 4 байта длины
+                        } catch (EOFException | SocketException e) {
+                            System.out.println("Клиент завершил сессию");
+                            break;
+                        }
 
-                    byte[] data = new byte[length];
-                    try {
-                        dis.readFully(data);
-                    } catch (IOException e) {
-                        System.out.println("Ошибка чтения данных от клиента: " + e.getMessage());
-                        break;
-                    }
+                        byte[] data = new byte[length];
+                        try {
+                            dis.readFully(data);
+                        } catch (IOException e) {
+                            System.out.println("Ошибка чтения данных от клиента: " + e.getMessage());
+                            break;
+                        }
 
-                    RequestDto requestDto;
-                    try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data))) {
-                        Object obj = ois.readObject();
-                        if (!(obj instanceof RequestDto)) {
-                            System.out.println("Получен неверный объект: " + obj.getClass());
-                            sendObject(dos, new AnswerDto(null, "Ошибка: получен неверный объект"));
+                        RequestDto requestDto;
+                        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data))) {
+                            Object obj = ois.readObject();
+                            if (!(obj instanceof RequestDto)) {
+                                System.out.println("Получен неверный объект: " + obj.getClass());
+                                sendObject(dos, new AnswerDto(null, "Ошибка: получен неверный объект"));
+                                continue;
+                            }
+                            requestDto = (RequestDto) obj;
+                        } catch (Exception e) {
+                            System.out.println("Ошибка десериализации запроса: " + e.getMessage());
+                            sendObject(dos, new AnswerDto(null, "Ошибка: данные повреждены или неверный формат"));
                             continue;
                         }
-                        requestDto = (RequestDto) obj;
-                    } catch (Exception e) {
-                        System.out.println("Ошибка десериализации запроса: " + e.getMessage());
-                        sendObject(dos, new AnswerDto(null, "Ошибка: данные повреждены или неверный формат"));
-                        continue;
-                    }
 
-                    // --- Логика обработки ---
-                    String message = requestDto.getCommand();
-                    Movie movieArg = requestDto.getMovie();
-                    String responseStr;
+                        // --- Логика обработки ---
+                        String message = requestDto.getCommand();
+                        Movie movieArg = requestDto.getMovie();
+                        String responseStr;
 
-                    if (message == null || message.isEmpty()) {
-                        responseStr = "Ошибка: команда пустая!";
-                    } else if ("add".equalsIgnoreCase(message) && movieArg != null) {
-                        responseStr = cmd.commandsEditor(movies, "add", movieArg);
-                    } else if (message.toLowerCase().startsWith("update") && movieArg != null) {
-                        String[] parts = message.split(" ");
-                        if (parts.length != 2) {
-                            responseStr = "Ошибка: команда update должна иметь вид 'update <id>'";
+                        if (message == null || message.isEmpty()) {
+                            responseStr = "Ошибка: команда пустая!";
+                        } else if ("add".equalsIgnoreCase(message) && movieArg != null) {
+                            responseStr = cmd.commandsEditor(movies, "add", movieArg);
+                        } else if (message.toLowerCase().startsWith("update") && movieArg != null) {
+                            String[] parts = message.split(" ");
+                            if (parts.length != 2) {
+                                responseStr = "Ошибка: команда update должна иметь вид 'update <id>'";
+                            } else {
+                                responseStr = cmd.commandsEditor(movies, "update " + parts[1], movieArg);
+                            }
+                        } else if ("exit".equalsIgnoreCase(message)) {
+                            responseStr = "Выход из программы";
+                            System.out.println("Клиент отключен");
+                            sendObject(dos, new AnswerDto(null, responseStr));
+                            break;
                         } else {
-                            responseStr = cmd.commandsEditor(movies, "update " + parts[1], movieArg);
+                            responseStr = cmd.commandsEditor(movies, message, null);
                         }
-                    } else if ("exit".equalsIgnoreCase(message)) {
-                        responseStr = "Выход из программы";
-                        System.out.println("Клиент отключен");
+
+                        // --- Отправка ответа ---
                         sendObject(dos, new AnswerDto(null, responseStr));
-                        break;
-                    } else {
-                        responseStr = cmd.commandsEditor(movies, message, null);
                     }
 
-                    // --- Отправка ответа ---
-                    sendObject(dos, new AnswerDto(null, responseStr));
+                } catch (IOException e) {
+                    System.out.println("Ошибка при работе с клиентом: " + e.getMessage());
                 }
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             SaveCommand saveCommand = new SaveCommand();
