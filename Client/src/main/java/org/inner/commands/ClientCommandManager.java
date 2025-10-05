@@ -13,6 +13,7 @@ public class ClientCommandManager {
         commands = new HashMap<>();
         commands.put("add", new AddElement());
         commands.put("update", new UpdateCommand());
+        commands.put("remove_greater", new RemoveGreatherElement());
     }
 
     public Movie execute(String stringCommand) {

@@ -68,7 +68,7 @@ public class Server {
                         // --- Логика обработки ---
                         String message = requestDto.getCommand();
                         Movie movieArg = requestDto.getMovie();
-                        String responseStr;
+                        String responseStr = "Ошибка: команда пустая!";
 
                         if (message == null || message.isEmpty()) {
                             responseStr = "Ошибка: команда пустая!";
@@ -81,6 +81,8 @@ public class Server {
                             } else {
                                 responseStr = cmd.commandsEditor(movies, "update " + parts[1], movieArg);
                             }
+                        } else if (message.toLowerCase().startsWith("remove_greater") && movieArg != null) {
+                            responseStr = cmd.commandsEditor(movies, "remove_greater", movieArg);
                         } else if ("exit".equalsIgnoreCase(message)) {
                             responseStr = "Выход из программы";
                             System.out.println("Клиент отключен");

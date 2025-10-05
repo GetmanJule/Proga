@@ -5,40 +5,30 @@ import org.data.inner.Movie;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /*
 
  */
 public class RemoveGreatherElement implements Command {
+    private Movie arg; // объект, который приходит с клиента
+
+    @Override
+    public void setArg(Movie arg) {
+        this.arg = arg;
+    }
+
     @Override
     public String doo(ArrayList<Movie> mySet, String s) {
-        String[] idS = s.split(" ");
-        long id;
-
-        try {
-            id = Long.parseLong(idS[1]);
-        } catch (Exception e) {
-            return "Id should be a number!";
+        if (arg == null) {
+            return "Некорректный объект";
         }
 
         if (mySet.isEmpty()) {
             return "Коллекция пуста, нечего удалять.";
         }
-
-        // ищем элемент с таким id
-        Movie baseMovie = mySet.stream()
-                .filter(m -> m.getId() == id)
-                .findFirst()
-                .orElse(null);
-
-        if (baseMovie == null) {
-            return "Элемент с id " + id + " не найден.";
-        }
-
         StringBuilder result = new StringBuilder();
 
-        // оставляем только те элементы, которые <= baseMovie
+        Movie baseMovie = arg;
         List<Movie> newMySet = mySet.stream()
                 .peek(m -> {
                     if (m.compareTo(baseMovie) < 0) {
@@ -55,11 +45,8 @@ public class RemoveGreatherElement implements Command {
         mySet.clear();
         mySet.addAll(newMySet);
 
-        // сортируем по имени (как у тебя было)
-        mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
-
         if (result.length() == 0) {
-            return "Фильмов больше элемента с id " + id + " не найдено.";
+            return "Фильмов больше элемента с id " + arg.getId() + " не найдено.";
         } else {
             return result.toString().trim();
         }
