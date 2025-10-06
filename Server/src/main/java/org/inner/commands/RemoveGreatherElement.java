@@ -10,7 +10,7 @@ import java.util.List;
 
  */
 public class RemoveGreatherElement implements Command {
-    private Movie arg; // объект, который приходит с клиента
+    private Movie arg; //временный объект, который приходит с клиента
 
     @Override
     public void setArg(Movie arg) {
@@ -28,7 +28,7 @@ public class RemoveGreatherElement implements Command {
         }
         StringBuilder result = new StringBuilder();
 
-        Movie baseMovie = arg;
+        Movie baseMovie = arg; //временная ссылка на пришедший объект
         List<Movie> newMySet = mySet.stream()
                 .peek(m -> {
                     if (m.compareTo(baseMovie) < 0) {

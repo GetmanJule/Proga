@@ -24,4 +24,28 @@
         <usaBoxOffice>1.0</usaBoxOffice>
         <mpaaRating>G</mpaaRating>
     </Movie>
+    <Movie>
+        <id>505191263</id>
+        <name>lol</name>
+        <coordinates>
+            <x>25.0</x>
+            <y>236</y>
+        </coordinates>
+        <person>
+            <name>pol</name>
+            <passportID>265</passportID>
+            <eyeColor>RED</eyeColor>
+            <nationality>GERMANY</nationality>
+            <location>
+                <x>null</x>
+                <y>null</y>
+                <name>null</name>
+            </location>
+        </person>
+        <creationDate>05.10.2025 19:28:16</creationDate>
+        <oscarsCount>25</oscarsCount>
+        <budget>264.0</budget>
+        <usaBoxOffice>2.0</usaBoxOffice>
+        <mpaaRating>PG</mpaaRating>
+    </Movie>
 </data>

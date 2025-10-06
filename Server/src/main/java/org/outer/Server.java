@@ -27,13 +27,14 @@ public class Server {
             while (true) {
                 System.out.println("Ожидание подключения клиента...");
                 try (Socket clientSocket = serverSocket.accept();
+                     //поток для чтения примитивных данных поверх чтения сырых, отдельных байтов или массивов
                      DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
                      DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream())) {
 
                     System.out.println("Клиент подключен: " + clientSocket.getInetAddress());
 
                     while (true) {
-                        // --- Чтение объекта ---
+                        // Чтение объекта
                         int length;
                         try {
                             length = dis.readInt(); // 4 байта длины
