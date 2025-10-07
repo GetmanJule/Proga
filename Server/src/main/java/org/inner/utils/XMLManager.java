@@ -214,7 +214,7 @@ public class XMLManager {
     public static void dropAll() {
         data.clear();
         try {
-            writeToFile(ServerMain.filePath);
+            writeToFile("data/save.xml");
         } catch (Exception e) {
             System.err.println("Не удалось очистить файл: " + e.getMessage());
         }

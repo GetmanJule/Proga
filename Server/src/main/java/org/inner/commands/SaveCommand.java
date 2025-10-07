@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class SaveCommand {
     public boolean doo(ArrayList<Movie> mySet) {
         try {
-            XMLManager.writeToFile(ServerMain.filePath);
+            XMLManager.writeToFile("data/save.xml");
             mySet = XMLManager.getData();
             System.out.println("data is saved!");
         } catch (Exception e) {
@@ -24,7 +24,7 @@ public class SaveCommand {
     }
     public boolean doo() {
         try {
-            XMLManager.writeToFile(ServerMain.filePath);
+            XMLManager.writeToFile("data/save.xml");
             System.out.println("data is saved!");
         } catch (Exception e) {
             System.out.println("Error saving data!");
