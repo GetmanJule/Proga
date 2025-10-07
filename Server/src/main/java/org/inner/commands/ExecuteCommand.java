@@ -10,7 +10,7 @@ import org.data.inner.enums.MpaaRating;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /*
@@ -18,7 +18,7 @@ import java.util.Scanner;
  */
 public class ExecuteCommand implements Command {
     @Override
-    public String doo(ArrayList<Movie> mySet, String s) {
+    public String doo(List<Movie> mySet, String s) {
         String[] idS = s.split(" ");
         String filename;
         try {

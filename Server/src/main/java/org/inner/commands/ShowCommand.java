@@ -3,14 +3,14 @@ package org.inner.commands;
 
 import org.data.inner.Movie;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /*
 
  */
 public class ShowCommand implements Command {
     @Override
-    public String doo(ArrayList<Movie> mySet, String s) {
+    public String doo(List<Movie> mySet, String s) {
         StringBuilder builder = new StringBuilder();
         if (mySet.size() > 0) {
             for (Movie m : mySet) {

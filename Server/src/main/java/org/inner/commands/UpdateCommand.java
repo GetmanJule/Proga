@@ -2,8 +2,8 @@ package org.inner.commands;
 
 import org.data.inner.Movie;
 
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class UpdateCommand implements Command {
 
@@ -15,7 +15,7 @@ public class UpdateCommand implements Command {
     }
 
     @Override
-    public String doo(ArrayList<Movie> mySet, String s) {
+    public String doo(List<Movie> mySet, String s) {
         // Проверка, что пришёл аргумент
 
         if (arg == null) {

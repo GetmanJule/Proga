@@ -2,7 +2,6 @@ package org.inner.commands;
 
 import org.data.inner.Movie;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -10,7 +9,7 @@ import java.util.List;
  */
 public class FilterStartsWithName implements Command {
     @Override
-    public String doo(ArrayList<Movie> mySet, String s) {
+    public String doo(List<Movie> mySet, String s) {
         if (s.split(" ").length == 1) {
             return "Please enter the name of the movie";
         }

@@ -4,6 +4,7 @@ import org.data.inner.Movie;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Coommands
@@ -11,7 +12,7 @@ import java.util.Comparator;
 
 public class Commands {
 
-    public String commandsEditor(ArrayList<Movie> mySet, String line, Movie arg) throws NullPointerException {
+    public String commandsEditor(List<Movie> mySet, String line, Movie arg) throws NullPointerException {
         String[] cmdStr = line.split(" ");
         try {
             Command command = CommandManager.listOfCommand.get(cmdStr[0]);

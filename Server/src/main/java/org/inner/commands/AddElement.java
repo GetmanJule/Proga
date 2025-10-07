@@ -5,6 +5,7 @@ import org.inner.utils.XMLManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Команда для добавления нового элемента Movie
@@ -19,7 +20,7 @@ public class AddElement implements Command {
     }
 
     @Override
-    public String doo(ArrayList<Movie> mySet, String s) {
+    public String doo(List<Movie> mySet, String s) {
 
 
 

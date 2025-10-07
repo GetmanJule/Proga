@@ -5,12 +5,13 @@ import org.main.ServerMain;
 import org.inner.utils.XMLManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /*
 
  */
 public class SaveCommand {
-    public boolean doo(ArrayList<Movie> mySet) {
+    public boolean doo(List<Movie> mySet) {
         try {
             XMLManager.writeToFile("data/save.xml");
             mySet = XMLManager.getData();

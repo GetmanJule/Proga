@@ -4,13 +4,14 @@ import org.data.inner.Movie;
 import org.inner.utils.XMLManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /*
 
  */
 public class ClearCommand implements Command {
     @Override
-    public String doo(ArrayList<Movie> mySet, String s) {
+    public String doo(List<Movie> mySet, String s) {
         XMLManager.dropAll();  // очищаем данные и файл
         mySet.clear();         // синхронизируем локальную коллекцию
         new SaveCommand().doo(mySet);

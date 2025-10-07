@@ -2,7 +2,7 @@ package org.inner.commands;
 
 import org.data.inner.Movie;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /*
 
@@ -12,7 +12,7 @@ public interface Command {//базовый интерфейс для коман�
     /*
 
      */
-    String doo(ArrayList<Movie> mySet, String s);
+    String doo(List<Movie> mySet, String s);
 
     /*
 
