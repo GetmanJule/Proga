@@ -1,21 +1,12 @@
-apply plugin: 'java'
-apply plugin: 'application'
-
-mainClassName = 'org.main.ServerMain'
-
-dependencies {
-    // Добавь зависимости при необходимости
+plugins {
+    id 'application'
 }
 
+application {
+    mainClass = 'org.main.ServerMain'  // замени на свой реальный класс
+}
 
-// Генерация runnable jar
-jar {
-    manifest {
-        attributes(
-                'Main-Class': mainClassName
-        )
-    }
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+dependencies {
+    implementation 'org.postgresql:postgresql:42.7.4'
+
 }

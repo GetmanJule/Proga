@@ -1,20 +1,16 @@
-apply plugin: 'java'
-apply plugin: 'application'
-
-mainClassName = 'org.ClientMain'
-
-dependencies {
-    // Добавь зависимости при необходимости
+plugins {
+    id 'application'
 }
 
-// Генерация runnable jar
-jar {
-    manifest {
-        attributes(
-                'Main-Class': mainClassName
-        )
-    }
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+application {
+    mainClass = 'org.ClientMain'  // замени на свой реальный класс
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'org.slf4j:slf4j-api:2.0.16'
+    runtimeOnly 'org.slf4j:slf4j-simple:2.0.16'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
 }
