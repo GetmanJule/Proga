@@ -3,7 +3,7 @@ package org;
 import org.inner.ConsoleIO;
 import org.inner.commands.ClientCommandManager;
 
-public class ClientMain {
+public class  ClientMain {
 
 
     public static void main(String[] args) {
