@@ -12,11 +12,12 @@ import java.util.List;
 
 public class Commands {
 
-    public String commandsEditor(List<Movie> mySet, String line, Movie arg) throws NullPointerException {
+    public String commandsEditor(List<Movie> mySet, String line, Movie arg, String login) throws NullPointerException {
         String[] cmdStr = line.split(" ");
         try {
             Command command = CommandManager.listOfCommand.get(cmdStr[0]);
             if (arg != null) arg.setId(arg.hashCode());
+            command.setLogin(login);
             command.setArg(arg);
             return command.doo(mySet, line);
         } catch (NullPointerException e) {

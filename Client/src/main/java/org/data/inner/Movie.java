@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 /**
  * XMLManager for managing XML DB
  */
-public class Movie implements Serializable {
+public class Movie implements Serializable, Comparable<Movie> {
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
@@ -18,9 +18,19 @@ public class Movie implements Serializable {
     private double usaBoxOffice; //Значение поля должно быть больше 0
     private MpaaRating mpaaRating; //Поле не может быть null
     private Person operator; //Поле не может быть null
+    private String userLogin;
     private static final long serialVersionUID = 1L;
 
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
+    }
+
+    public String getUserLogin() {
+        return userLogin;
+    }
+
     public Movie(String name, Coordinates coordinates, Long oscarsCount, float budget, double usaBoxOffice, MpaaRating mpaaRating, Person operator) {
+        this.id = this.hashCode();//чтобы точно разными были
         this.name = name;
         this.coordinates = coordinates;
         this.creationDate = LocalDateTime.now();//автоматически
@@ -57,6 +67,7 @@ public class Movie implements Serializable {
     public String getName() {
         return name;
     }
+
     public String getNameUpperCase() {
         return name.toUpperCase();
     }
@@ -124,13 +135,18 @@ public class Movie implements Serializable {
     @Override
     public String toString() {
         return "id: " + this.id
-                + "\nname: " + this.name
-                + "\ncoordinates: " + this.coordinates
-                + "\ncreationDate: " + this.creationDate
-                + "\noscarsCount: " + this.oscarsCount
-                + "\nbudget: " + this.budget
-                + "\nusaBoxOffice: " + this.usaBoxOffice
-                + "\nmpaaRating: " + this.mpaaRating
-                + "\noperator: " + this.operator;
+               + "\nname: " + this.name
+               + "\ncoordinates: " + this.coordinates
+               + "\ncreationDate: " + this.creationDate
+               + "\noscarsCount: " + this.oscarsCount
+               + "\nbudget: " + this.budget
+               + "\nusaBoxOffice: " + this.usaBoxOffice
+               + "\nmpaaRating: " + this.mpaaRating
+               + "\noperator: " + this.operator;
+    }
+
+    @Override
+    public int compareTo(Movie o) {
+        return Long.compare(o.id, this.id);
     }
 }

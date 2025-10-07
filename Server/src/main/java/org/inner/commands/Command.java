@@ -28,4 +28,8 @@ public interface Command {//базовый интерфейс для коман�
         //
     }
 
+    default void setLogin(String login){
+
+    }
+
 }

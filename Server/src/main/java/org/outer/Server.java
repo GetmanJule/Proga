@@ -3,6 +3,7 @@ package org.outer;
 import org.data.AnswerDto;
 import org.data.RequestDto;
 import org.data.inner.Movie;
+import org.inner.MovieRepository;
 import org.inner.commands.Commands;
 import org.inner.commands.SaveCommand;
 import org.inner.utils.XMLManager;
@@ -12,39 +13,43 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
 public class Server {
 
     private final static int port = 45887;
-
     private final Commands cmd = new Commands();
-    private static final ArrayList<Movie> xmlMovies = XMLManager.getData();
 
     private final ExecutorService readPool = Executors.newCachedThreadPool();
     private final ExecutorService processPool = Executors.newFixedThreadPool(4);
     private final ExecutorService sendPool = Executors.newFixedThreadPool(4);
+    public final List<Movie> movies;
+    public Server(){
+        movies = MovieRepository.loadAll();
+    }
+
+    public void save() {
+        new SaveCommand().doo(movies);
+    }
 
     public void start() throws Exception {
-        DatabaseManager.loadAllMovies();
-        System.out.println("Movies loaded in memory: " + DatabaseManager.getMovieList().size());
+        System.out.println("Movies loaded in memory: " + movies.size());
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server started on port " + port);
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                readPool.submit(() -> handleClient(clientSocket));
+                readPool.submit(() -> handleClient(clientSocket, movies));
             }
         } finally {
-            new SaveCommand().doo();
+            // при завершении сервера сохраняем все изменения в БД
             System.out.println("Data saved on server shutdown");
         }
     }
 
-    private void handleClient(Socket clientSocket) {
+    private void handleClient(Socket clientSocket, List<Movie> movies) {
         try (DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
              DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream())) {
 
@@ -88,13 +93,13 @@ public class Server {
                                 answer = "Error: " + e.getMessage();
                             }
                         } else {
-                            // --- проверка авторизации для всех остальных команд ---
+                            // --- проверка авторизации ---
                             try {
                                 if (!DatabaseManager.authenticateUser(login, password)) {
                                     answer = "Unauthorized. Please login first.";
                                 } else {
-                                    // --- обработка команд через старую логику ---
-                                    answer = handleCommand(command, movieArg);
+                                    // --- обработка команд только с коллекцией в памяти ---
+                                    answer = handleCommand(command, movieArg, login, movies);
                                 }
                             } catch (Exception e) {
                                 answer = "Error: " + e.getMessage();
@@ -108,7 +113,6 @@ public class Server {
                         e.printStackTrace();
                     }
                 });
-
             }
 
         } catch (IOException e) {
@@ -116,29 +120,40 @@ public class Server {
         }
     }
 
-    /**
-     * Обработка команд add/update/remove_greater/exit и всех остальных через старую Commands
-     */
-    private String handleCommand(String command, Movie movieArg) {
+    private String handleCommand(String command, Movie movieArg, String login, List<Movie> movies) {
         String response = "Unknown command";
-
         if (command == null || command.isEmpty()) {
-            response = "Ошибка: команда пустая!";
-        } else if ("add".equalsIgnoreCase(command) && movieArg != null) {
-            response = cmd.commandsEditor(DatabaseManager.getMovieList(), "add", movieArg);
-        } else if (command.toLowerCase().startsWith("update") && movieArg != null) {
-            String[] parts = command.split(" ");
-            if (parts.length != 2) {
-                response = "Ошибка: команда update должна иметь вид 'update <id>'";
-            } else {
-                response = cmd.commandsEditor(DatabaseManager.getMovieList(), "update " + parts[1], movieArg);
-            }
-        } else if (command.toLowerCase().startsWith("remove_greater") && movieArg != null) {
-            response = cmd.commandsEditor(DatabaseManager.getMovieList(), "remove_greater", movieArg);
-        } else if ("exit".equalsIgnoreCase(command)) {
-            response = "Выход из программы";
-        } else {
-            response = cmd.commandsEditor(DatabaseManager.getMovieList(), command, null);
+            return "Ошибка: команда пустая!";
+        }
+
+        command = command.toLowerCase();
+
+        switch (command.split(" ")[0]) {
+            case "add":
+                if (movieArg != null) {
+                    response = cmd.commandsEditor(movies, "add", movieArg, login);
+                } else response = "Ошибка: объект фильма не передан!";
+                break;
+            case "update":
+                if (movieArg != null) {
+                    String[] parts = command.split(" ");
+                    if (parts.length != 2) response = "Ошибка: update <id>";
+                    else response = cmd.commandsEditor(movies, "update " + parts[1], movieArg, login);
+                } else response = "Ошибка: объект фильма не передан!";
+                break;
+            case "remove_greater":
+                if (movieArg != null) {
+                    response = cmd.commandsEditor(movies, "remove_greater", movieArg, login);
+                } else response = "Ошибка: объект фильма не передан!";
+                break;
+            case "clear":
+                response = cmd.commandsEditor(movies, "clear", null, login);
+                break;
+            case "exit":
+                response = "Выход из программы";
+                break;
+            default:
+                response = cmd.commandsEditor(movies, command, null, login);
         }
 
         return response;

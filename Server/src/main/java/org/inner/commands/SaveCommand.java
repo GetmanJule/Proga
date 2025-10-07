@@ -1,37 +1,27 @@
 package org.inner.commands;
 
 import org.data.inner.Movie;
-import org.main.ServerMain;
-import org.inner.utils.XMLManager;
+import org.inner.MovieRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/*
-
+/**
+ * Команда для сохранения коллекции фильмов в базу данных
  */
 public class SaveCommand {
+
+    /**
+     * Сохраняет переданный список фильмов в БД.
+     * Для новых фильмов вызывает add, для существующих — update.
+     */
     public boolean doo(List<Movie> mySet) {
-        try {
-            XMLManager.writeToFile("data/save.xml");
-            mySet = XMLManager.getData();
-            System.out.println("data is saved!");
-        } catch (Exception e) {
-            System.out.println("Error saving data!");
-            /*System.out.println(e);*/
+        if (mySet == null || mySet.isEmpty()) {
+            System.out.println("Коллекция пуста, сохранять нечего.");
+            return false;
         }
-
+        MovieRepository.saveAll(mySet);
+        System.out.println("Данные сохранены в базу данных!");
         return true;
     }
-    public boolean doo() {
-        try {
-            XMLManager.writeToFile("data/save.xml");
-            System.out.println("data is saved!");
-        } catch (Exception e) {
-            System.out.println("Error saving data!");
-            /*System.out.println(e);*/
-        }
 
-        return true;
-    }
 }

@@ -51,6 +51,7 @@ public class Client {
                 if (msg == null || msg.isEmpty()) continue;
 
                 Movie movie = null;
+
                 RequestDto requestDto = new RequestDto();
 
                 if (msg.toLowerCase().startsWith("update")) {
@@ -66,6 +67,9 @@ public class Client {
                     movie = commandManager.execute(msg);
                     if (movie != null) requestDto.setMovie(movie);
                     requestDto.setCommand(msg);
+                }
+                if (movie!=null){
+                    movie.setUserLogin(login);
                 }
 
                 // прикрепляем логин и пароль к каждому запросу
@@ -102,7 +106,9 @@ public class Client {
         }
     }
 
-    /** Метод для регистрации / входа */
+    /**
+     * Метод для регистрации / входа
+     */
     private void authenticate(ConsoleIO consoleIO, SocketChannel channel, Selector selector) throws IOException, ClassNotFoundException {
         while (true) {
             System.out.println("Введите команду: register / login");
@@ -178,7 +184,10 @@ public class Client {
 
             } catch (Exception e) {
                 System.out.println("Попытка " + attempt + " не удалась: " + e.getMessage());
-                try { Thread.sleep(RETRY_DELAY_MS); } catch (InterruptedException ignored) {}
+                try {
+                    Thread.sleep(RETRY_DELAY_MS);
+                } catch (InterruptedException ignored) {
+                }
             }
         }
         return null;
