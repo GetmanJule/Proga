@@ -11,6 +11,14 @@ public class RequestDto implements Serializable {
     private String password;
     private static final long serialVersionUID = 1L;
 
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public RequestDto(Movie movie, String command, String login, String password) {
         this.movie = movie;
         this.command = command;

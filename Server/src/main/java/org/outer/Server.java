@@ -7,6 +7,8 @@ import org.data.inner.Movie;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -56,27 +58,49 @@ public class Server {
 
                         String login = request.getLogin();
                         String password = request.getPassword();
-
                         String answer = "Unauthorized";
-                        Movie movieArg = request.getMovie();
 
                         try {
-                            if (DatabaseManager.authenticateUser(login, password)) {
-                                List<Movie> movies = DatabaseManager.getMovieList();
+                            switch (request.getCommand().toLowerCase()) {
+                                case "register":
+                                    try {
+                                        boolean registered = DatabaseManager.registerUser(login, password);
+                                        answer = registered ? "Registration success" : "Registration failed (user exists)";
+                                    } catch (SQLException | NoSuchAlgorithmException e) {
+                                        answer = "Error: " + e.getMessage();
+                                    }
+                                    break;
 
-                                switch (request.getCommand().toLowerCase()) {
-                                    case "add":
-                                        if (movieArg != null) {
-                                            DatabaseManager.addMovie(movieArg, login);
-                                            answer = "Movie added";
+                                case "login":
+                                    boolean auth = DatabaseManager.authenticateUser(login, password);
+                                    answer = auth ? "Login success" : "Login failed";
+                                    break;
+
+                                default:
+                                    // проверка авторизации перед выполнением остальных команд
+                                    if (DatabaseManager.authenticateUser(login, password)) {
+                                        List<Movie> movies = DatabaseManager.getMovieList();
+
+                                        switch (request.getCommand().toLowerCase()) {
+                                            case "add":
+                                                Movie movieArg = request.getMovie();
+                                                if (movieArg != null) {
+                                                    DatabaseManager.addMovie(movieArg, login);
+                                                    answer = "Movie added";
+                                                }
+                                                break;
+
+                                            case "show":
+                                                answer = "Movies: " + movies.size();
+                                                break;
+
+                                            default:
+                                                answer = "Unknown command";
                                         }
-                                        break;
-                                    case "show":
-                                        answer = "Movies: " + movies.size();
-                                        break;
-                                    default:
-                                        answer = "Unknown command";
-                                }
+                                    } else {
+                                        answer = "Unauthorized. Please login first.";
+                                    }
+                                    break;
                             }
                         } catch (Exception e) {
                             answer = "Error: " + e.getMessage();

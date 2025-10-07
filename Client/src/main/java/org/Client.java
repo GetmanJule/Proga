@@ -23,6 +23,8 @@ public class Client {
     private static final int SELECT_TIMEOUT_MS = 500;
 
     private final ClientCommandManager commandManager;
+    private String login;
+    private String password;
 
     public Client(ClientCommandManager commandManager) {
         this.commandManager = commandManager;
@@ -40,13 +42,16 @@ public class Client {
         try (Selector selector = Selector.open()) {
             channel.register(selector, SelectionKey.OP_READ);
 
+            // регистрация / вход
+            authenticate(consoleIO, channel, selector);
+
+            // основной цикл команд
             while (true) {
                 String msg = consoleIO.write();
                 if (msg == null || msg.isEmpty()) continue;
 
-                // формируем запрос
-                RequestDto requestDto = new RequestDto();
                 Movie movie = null;
+                RequestDto requestDto = new RequestDto();
 
                 if (msg.toLowerCase().startsWith("update")) {
                     UpdateCommand updateCommand = new UpdateCommand();
@@ -62,6 +67,10 @@ public class Client {
                     if (movie != null) requestDto.setMovie(movie);
                     requestDto.setCommand(msg);
                 }
+
+                // прикрепляем логин и пароль к каждому запросу
+                requestDto.setLogin(login);
+                requestDto.setPassword(password);
 
                 // отправляем запрос
                 ByteBuffer outBuffer = serializeWithLength(requestDto);
@@ -93,9 +102,40 @@ public class Client {
         }
     }
 
-    /**
-     * Попытка подключения с Selector в неблокирующем режиме
-     */
+    /** Метод для регистрации / входа */
+    private void authenticate(ConsoleIO consoleIO, SocketChannel channel, Selector selector) throws IOException, ClassNotFoundException {
+        while (true) {
+            System.out.println("Введите команду: register / login");
+            String cmd = consoleIO.write().trim().toLowerCase();
+
+            if (!cmd.equals("register") && !cmd.equals("login")) {
+                System.out.println("Неверная команда. Введите register или login");
+                continue;
+            }
+
+            System.out.print("Введите логин: ");
+            this.login = consoleIO.write();
+            System.out.print("Введите пароль: ");
+            this.password = consoleIO.write();
+
+            RequestDto request = new RequestDto();
+            request.setCommand(cmd);
+            request.setLogin(login);
+            request.setPassword(password);
+
+            ByteBuffer outBuffer = serializeWithLength(request);
+            writeFully(channel, outBuffer, selector);
+
+            Object obj = readObjectNonBlocking(channel, selector);
+            if (obj instanceof AnswerDto answerDto) {
+                System.out.println(answerDto.getAnswer());
+                if (answerDto.getAnswer().toLowerCase().contains("success")) {
+                    break; // успешная регистрация или вход
+                }
+            }
+        }
+    }
+
     private SocketChannel tryConnectNonBlocking() {
         for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
             try {
@@ -138,17 +178,12 @@ public class Client {
 
             } catch (Exception e) {
                 System.out.println("Попытка " + attempt + " не удалась: " + e.getMessage());
-                try {
-                    Thread.sleep(RETRY_DELAY_MS);
-                } catch (InterruptedException ignored) {}
+                try { Thread.sleep(RETRY_DELAY_MS); } catch (InterruptedException ignored) {}
             }
         }
         return null;
     }
 
-    /**
-     * Неблокирующая запись всего буфера
-     */
     private void writeFully(SocketChannel channel, ByteBuffer buffer, Selector selector) throws IOException {
         channel.register(selector, SelectionKey.OP_WRITE);
         while (buffer.hasRemaining()) {
@@ -157,32 +192,22 @@ public class Client {
             while (iter.hasNext()) {
                 SelectionKey key = iter.next();
                 iter.remove();
-
-                if (key.isWritable()) {
-                    channel.write(buffer);
-                }
+                if (key.isWritable()) channel.write(buffer);
             }
         }
-        channel.register(selector, SelectionKey.OP_READ); // возвращаем в режим чтения
+        channel.register(selector, SelectionKey.OP_READ);
     }
 
-    /**
-     * Неблокирующее чтение объекта с length-prefixed протоколом
-     */
     private Object readObjectNonBlocking(SocketChannel channel, Selector selector)
             throws IOException, ClassNotFoundException {
 
-        // читаем длину (4 байта)
         ByteBuffer lenBuf = ByteBuffer.allocate(4);
-        if (!readFullyNonBlocking(channel, selector, lenBuf))
-            return null;
+        if (!readFullyNonBlocking(channel, selector, lenBuf)) return null;
         lenBuf.flip();
         int length = lenBuf.getInt();
 
-        // читаем полезные данные
         ByteBuffer dataBuf = ByteBuffer.allocate(length);
-        if (!readFullyNonBlocking(channel, selector, dataBuf))
-            return null;
+        if (!readFullyNonBlocking(channel, selector, dataBuf)) return null;
 
         dataBuf.flip();
         byte[] objectData = new byte[length];
@@ -193,9 +218,6 @@ public class Client {
         }
     }
 
-    /**
-     * Читает буфер полностью с таймаутом
-     */
     private boolean readFullyNonBlocking(SocketChannel channel, Selector selector, ByteBuffer buffer) throws IOException {
         long start = System.currentTimeMillis();
         while (buffer.hasRemaining() && (System.currentTimeMillis() - start) < CONNECT_TIMEOUT_MS) {
@@ -204,19 +226,15 @@ public class Client {
             while (iter.hasNext()) {
                 SelectionKey key = iter.next();
                 iter.remove();
-
                 if (key.isReadable()) {
                     int bytesRead = channel.read(buffer);
-                    if (bytesRead == -1) return false; // сервер закрыл соединение
+                    if (bytesRead == -1) return false;
                 }
             }
         }
         return !buffer.hasRemaining();
     }
 
-    /**
-     * Сериализация объекта в ByteBuffer (length + data)
-     */
     private ByteBuffer serializeWithLength(Object obj) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
