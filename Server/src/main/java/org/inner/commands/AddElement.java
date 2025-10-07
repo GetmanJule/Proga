@@ -1,18 +1,19 @@
 package org.inner.commands;
 
 import org.data.inner.Movie;
-import org.inner.utils.XMLManager;
+import org.inner.MovieRepository;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-/**
- * Команда для добавления нового элемента Movie
- */
 public class AddElement implements Command {
 
-    private Movie arg; // объект, который приходит с клиента
+    private Movie arg;
+    private String login;
+
+    @Override
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
     @Override
     public void setArg(Movie arg) {
@@ -21,26 +22,20 @@ public class AddElement implements Command {
 
     @Override
     public String doo(List<Movie> mySet, String s) {
+        if (arg == null) return "Ошибка: не передан объект Movie для добавления!";
 
-
-
-        if (arg == null) {
-            return "Ошибка: не передан объект Movie для добавления!";
-        }
-
-        // Проверка уникальности passportId оператора
+        // Проверка уникальности passportId
         if (arg.getOperator() != null) {
             for (Movie m : mySet) {
-                if (m.getOperator().getPassportID().equals(arg.getOperator().getPassportID())) {
+                if (m.getOperator() != null &&
+                    m.getOperator().getPassportID().equals(arg.getOperator().getPassportID())) {
                     return "Ошибка: Person passportID '" + arg.getOperator().getPassportID() + "' уже существует!";
                 }
             }
         }
 
-        // Добавляем в коллекцию
         mySet.add(arg);
-        mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
-        new SaveCommand().doo(mySet);
+
         return "Фильм '" + arg.getName() + "' успешно добавлен!";
     }
 

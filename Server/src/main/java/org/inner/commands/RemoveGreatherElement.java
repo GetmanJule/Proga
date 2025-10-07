@@ -1,14 +1,14 @@
 package org.inner.commands;
 
 import org.data.inner.Movie;
+import org.inner.MovieRepository;
 
+import java.util.Iterator;
 import java.util.List;
 
-/*
-
- */
 public class RemoveGreatherElement implements Command {
-    private Movie arg; //временный объект, который приходит с клиента
+
+    private Movie arg;
 
     @Override
     public void setArg(Movie arg) {
@@ -16,40 +16,23 @@ public class RemoveGreatherElement implements Command {
     }
 
     @Override
-    public String doo(List<Movie> mySet, String s) {
-        if (arg == null) {
-            return "Некорректный объект";
-        }
+    public String doo(List<Movie> collection, String s) {
+        if (arg == null) return "Некорректный объект";
+        if (collection.isEmpty()) return "Коллекция пуста.";
 
-        if (mySet.isEmpty()) {
-            return "Коллекция пуста, нечего удалять.";
-        }
         StringBuilder result = new StringBuilder();
-
-        Movie baseMovie = arg; //временная ссылка на пришедший объект
-        List<Movie> newMySet = mySet.stream()
-                .peek(m -> {
-                    if (m.compareTo(baseMovie) < 0) {
-                        result.append("Фильм с id ")
-                                .append(m.getId())
-                                .append(" ('")
-                                .append(m.getName())
-                                .append("') удалён.\n");
-                    }
-                })
-                .filter(m -> m.compareTo(baseMovie) >= 0)
-                .toList();
-
-        mySet.clear();
-        mySet.addAll(newMySet);
-
-        if (result.length() == 0) {
-            return "Фильмов больше элемента с id " + arg.getId() + " не найдено.";
-        } else {
-            return result.toString().trim();
+        Iterator<Movie> iterator = collection.iterator();
+        while (iterator.hasNext()) {
+            Movie movie = iterator.next();
+            if (movie.compareTo(arg) > 0) {
+                iterator.remove(); // удаляем только из коллекции
+                result.append("Фильм с id ").append(movie.getId())
+                        .append(" ('").append(movie.getName()).append("') удалён.\n");
+            }
         }
-    }
 
+        return result.length() > 0 ? result.toString().trim() : "Фильмов больше элемента с id " + arg.getId() + " не найдено.";
+    }
 
     @Override
     public String des() {

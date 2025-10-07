@@ -1,27 +1,27 @@
 package org.inner.commands;
 
 import org.data.inner.Movie;
-import org.inner.utils.XMLManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/*
-
- */
 public class ClearCommand implements Command {
+
+    private String login;
+
     @Override
-    public String doo(List<Movie> mySet, String s) {
-        XMLManager.dropAll();  // очищаем данные и файл
-        mySet.clear();         // синхронизируем локальную коллекцию
-        new SaveCommand().doo(mySet);
-        return "data is dropped!";
+    public void setLogin(String login) {
+        this.login = login;
     }
 
+    @Override
+    public String doo(List<Movie> mySet, String s) {
+        mySet.removeIf(m -> login.equals(m.getUserLogin()));
+        return "Ваши элементы очищены! Оставшиеся: " + mySet.size();
+    }
 
     @Override
     public String des() {
-        return "clear : очистить коллекцию";
+        return "clear : очистить только свои элементы (в коллекции)";
     }
 
     @Override

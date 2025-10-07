@@ -1,13 +1,13 @@
 package org.inner.commands;
 
 import org.data.inner.Movie;
+import org.inner.MovieRepository;
 
-import java.util.Comparator;
 import java.util.List;
 
 public class UpdateCommand implements Command {
 
-    private Movie arg; // объект, который приходит с клиента
+    private Movie arg;
 
     @Override
     public void setArg(Movie arg) {
@@ -16,16 +16,8 @@ public class UpdateCommand implements Command {
 
     @Override
     public String doo(List<Movie> mySet, String s) {
-        // Проверка, что пришёл аргумент
-
-        if (arg == null) {
-            return "Ошибка: объект для обновления не передан!";
-        }
-
-        // Проверка, что передан id в команде
-        if (s == null || !s.matches("^update\\s+\\d+$")) {
-            return "Ошибка: некорректный ввод! Используйте: update {id}";
-        }
+        if (arg == null) return "Ошибка: объект для обновления не передан!";
+        if (s == null || !s.matches("^update\\s+\\d+$")) return "Ошибка: используйте update {id}";
 
         long id;
         try {
@@ -34,38 +26,22 @@ public class UpdateCommand implements Command {
             return "Ошибка: id должен быть числом!";
         }
 
-        // Находим объект по id
-        Movie existing = null;
-        for (Movie m : mySet) {
-            if (m.getId() == id) {
-                existing = m;
-                break;
-            }
-        }
+        Movie existing = mySet.stream().filter(m -> m.getId() == id).findFirst().orElse(null);
+        if (existing == null) return "Объект с id " + id + " не найден!";
 
-        if (existing == null) {
-            return "Объект с id " + id + " не найден!";
-        }
+        // Обновляем БД
+        arg.setId(id);
 
-        // Заменяем поля существующего объекта на поля пришедшего
-        existing.setName(arg.getName());
-        existing.setCoordinates(arg.getCoordinates());
-        existing.setOscarsCount(arg.getOscarsCount());
-        existing.setBudget(arg.getBudget());
-        existing.setUsaBoxOffice(arg.getUsaBoxOffice());
-        existing.setMpaaRating(arg.getMpaaRating());
-        existing.setOperator(arg.getOperator());
-
-        // Сортировка коллекции по имени
-        mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
-        new SaveCommand().doo(mySet);
+        // Обновляем локальную коллекцию
+        int index = mySet.indexOf(existing);
+        mySet.set(index, arg);
 
         return "Объект с id " + id + " успешно обновлен!";
     }
 
     @Override
     public String des() {
-        return "update {id} {element} : обновить объект коллекции по id с данными, присланными с клиента";
+        return "update {id} {element} : обновить объект коллекции по id";
     }
 
     @Override

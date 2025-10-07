@@ -1,53 +1,34 @@
 package org.inner.commands;
 
 import org.data.inner.Movie;
+import org.inner.MovieRepository;
 
-import java.util.Comparator;
 import java.util.List;
 
-/*
-
- */
 public class RemoveByIdCommand implements Command {
+
     @Override
     public String doo(List<Movie> mySet, String s) {
-        if (s.split(" ").length == 1) {
-            return "Please enter the ID of the movie";
-        }
+        if (s.split(" ").length < 2) return "Введите ID для удаления";
 
-        String idStr = s.split(" ")[1];
         int id;
         try {
-            id = Integer.parseInt(idStr);
+            id = Integer.parseInt(s.split(" ")[1]);
         } catch (NumberFormatException e) {
-            return "Invalid ID format: " + idStr;
+            return "Некорректный ID: " + s.split(" ")[1];
         }
 
-        if (mySet.isEmpty()) {
-            return "Коллекция пуста!";
-        }
+        Movie toRemove = mySet.stream().filter(m -> m.getId() == id).findFirst().orElse(null);
+        if (toRemove == null) return "Фильм с ID " + id + " не найден.";
 
-        Movie toRemove = null;
-        for (Movie m : mySet) {
-            if (m.getId() == id) {
-                toRemove = m;
-                break;
-            }
-        }
-
-        if (toRemove != null) {
-            mySet.remove(toRemove);
-            mySet.sort(Comparator.comparing(Movie::getNameUpperCase));
-            return "Фильм '" + toRemove.getName() + "' с ID " + id + " успешно удалён.";
-        } else {
-            return "Фильм с ID " + id + " не найден.";
-        }
+        // Удаляем из коллекции
+        mySet.remove(toRemove);
+        return "Фильм '" + toRemove.getName() + "' с ID " + id + " удалён.";
     }
-
 
     @Override
     public String des() {
-        return "remove_by_id id : удалить элемент из коллекции по его id";
+        return "remove_by_id id : удалить элемент из коллекции по id";
     }
 
     @Override
