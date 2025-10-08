@@ -18,6 +18,17 @@ public class DatabaseManager {
     private static final String user = "s465527";
     private static final String password = "gYobdNKJPaDxgOiE";
 
+    public DatabaseManager(){
+        try {
+            Class.forName("org.postgresql.Driver");
+            System.out.println("PostgreSQL драйвер загружен успешно");
+        } catch (ClassNotFoundException e) {
+            System.err.println("Драйвер PostgreSQL не найден в classpath!");
+            e.printStackTrace();
+            return;
+        }
+    }
+
     private static final List<Movie> movieList = Collections.synchronizedList(new ArrayList<>());
 
     public static Connection getConnection() throws SQLException {
