@@ -25,7 +25,8 @@ public class Server {
     private final ExecutorService processPool = Executors.newFixedThreadPool(4);
     private final ExecutorService sendPool = Executors.newFixedThreadPool(4);
     public final List<Movie> movies;
-    public Server(){
+
+    public Server() {
         movies = MovieRepository.loadAll();
     }
 
@@ -74,7 +75,7 @@ public class Server {
                         String login = request.getLogin();
                         String password = request.getPassword();
                         String command = request.getCommand();
-                        Movie movieArg = request.getMovie();
+                        final Movie movieArg = request.getMovie();
                         String answer;
 
                         // --- регистрация и логин ---
@@ -138,7 +139,9 @@ public class Server {
                 if (movieArg != null) {
                     String[] parts = command.split(" ");
                     if (parts.length != 2) response = "Ошибка: update <id>";
-                    else response = cmd.commandsEditor(movies, "update " + parts[1], movieArg, login);
+                    else {
+                        movieArg.setId(Long.parseLong(parts[1]));
+                        response = cmd.commandsEditor(movies, "update " + parts[1], movieArg, login);}
                 } else response = "Ошибка: объект фильма не передан!";
                 break;
             case "remove_greater":

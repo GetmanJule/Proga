@@ -186,7 +186,7 @@ public class UpdateCommand implements Command {
         movie.setUsaBoxOffice(usaBoxOffice);
         movie.setMpaaRating(mpaaRating);
         movie.setOperator(new Person(persName, passportId, perColorEye, nationality, loc));
-
+        movie.setId(id);
         return movie;
     }
 
