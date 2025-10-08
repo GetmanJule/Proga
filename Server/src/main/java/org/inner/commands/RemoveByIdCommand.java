@@ -6,7 +6,12 @@ import org.inner.MovieRepository;
 import java.util.List;
 
 public class RemoveByIdCommand implements Command {
+    private String login;
 
+    @Override
+    public void setLogin(String login) {
+        this.login = login;
+    }
     @Override
     public String doo(List<Movie> mySet, String s) {
         if (s.split(" ").length < 2) return "Введите ID для удаления";
@@ -18,8 +23,8 @@ public class RemoveByIdCommand implements Command {
             return "Некорректный ID: " + s.split(" ")[1];
         }
 
-        Movie toRemove = mySet.stream().filter(m -> m.getId() == id).findFirst().orElse(null);
-        if (toRemove == null) return "Фильм с ID " + id + " не найден.";
+        Movie toRemove = mySet.stream().filter(m -> (m.getId() == id && m.getUserLogin().equals(login))).findFirst().orElse(null);
+        if (toRemove == null) return "Фильм с ID " + id + " не найден или не принадлежит вам";
 
         // Удаляем из коллекции
         mySet.remove(toRemove);

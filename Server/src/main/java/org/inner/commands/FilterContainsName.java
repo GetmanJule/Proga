@@ -10,18 +10,30 @@ import java.util.List;
 public class FilterContainsName implements Command {
     @Override
     public String doo(List<Movie> mySet, String s) {
-        if (s.split(" ").length == 1) {
+        String[] parts = s.split(" ", 2);
+        if (parts.length < 2 || parts[1].isBlank()) {
             return "Please enter the name of the movie";
         }
-        StringBuilder builder = new StringBuilder();
-        List<Movie> movies = mySet.stream().filter(movie -> movie.getName().contains(s.split(" ")[1])).peek(movie -> builder.append(movie.getName() + " contains " + s + "\n")).toList();
 
-        if (movies.size() != 0) {
+        String search = parts[1].toLowerCase();
+        StringBuilder builder = new StringBuilder();
+
+        List<Movie> movies = mySet.stream()
+                .filter(movie -> movie.getName() != null && movie.getName().toLowerCase().contains(search))
+                .peek(movie -> builder.append("Movie '")
+                        .append(movie.getName())
+                        .append("' contains '")
+                        .append(search)
+                        .append("'\n"))
+                .toList();
+
+        if (!movies.isEmpty()) {
             return builder.toString();
         } else {
             return "No movies found!";
         }
     }
+
 
     @Override
     public String des() {

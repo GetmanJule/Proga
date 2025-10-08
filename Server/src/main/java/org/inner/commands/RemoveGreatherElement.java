@@ -9,6 +9,12 @@ import java.util.List;
 public class RemoveGreatherElement implements Command {
 
     private Movie arg;
+    private String login;
+
+    @Override
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
     @Override
     public void setArg(Movie arg) {
@@ -24,7 +30,7 @@ public class RemoveGreatherElement implements Command {
         Iterator<Movie> iterator = collection.iterator();
         while (iterator.hasNext()) {
             Movie movie = iterator.next();
-            if (movie.compareTo(arg) > 0) {
+            if (movie.compareTo(arg) > 0 && movie.getUserLogin().equals(login)) {
                 iterator.remove(); // удаляем только из коллекции
                 result.append("Фильм с id ").append(movie.getId())
                         .append(" ('").append(movie.getName()).append("') удалён.\n");

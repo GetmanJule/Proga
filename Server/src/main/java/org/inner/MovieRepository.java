@@ -1,4 +1,5 @@
 package org.inner;
+
 import org.data.inner.Coordinates;
 import org.data.inner.Location;
 import org.data.inner.Movie;
@@ -24,7 +25,7 @@ public class MovieRepository {
     private static final String USER = "s465527";
     private static final String PASSWORD = "gYobdNKJPaDxgOiE";
 
-    public MovieRepository(){
+    public MovieRepository() {
         try {
             Class.forName("org.postgresql.Driver");
             System.out.println("PostgreSQL драйвер загружен успешно");
@@ -35,23 +36,25 @@ public class MovieRepository {
         }
     }
 
-    /** Загружаем коллекцию из базы */
+    /**
+     * Загружаем коллекцию из базы
+     */
     public static List<Movie> loadAll() {
         List<Movie> list = new ArrayList<>();
         String sql = """
-        SELECT m.*, 
-               p.name AS pname, 
-               p.passport_id, 
-               p.eye_color, 
-               p.nationality, 
-               p.loc_x, 
-               p.loc_y, 
-               p.loc_name,
-               m.owner_login AS owner_login
-        FROM movies m 
-        LEFT JOIN persons p ON m.operator_id = p.id 
-        ORDER BY m.name
-        """;
+                SELECT m.*, 
+                       p.name AS pname, 
+                       p.passport_id, 
+                       p.eye_color, 
+                       p.nationality, 
+                       p.loc_x, 
+                       p.loc_y, 
+                       p.loc_name,
+                       m.owner_login AS owner_login
+                FROM movies m 
+                LEFT JOIN persons p ON m.operator_id = p.id 
+                ORDER BY m.name
+                """;
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              Statement stmt = conn.createStatement();
@@ -72,19 +75,19 @@ public class MovieRepository {
     }
 
 
-    /** Сохраняем всю коллекцию в базу при завершении работы сервера */
+    /**
+     * Сохраняем всю коллекцию в базу при завершении работы сервера
+     */
     public static void saveAll(List<Movie> collection) {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
             conn.setAutoCommit(false);
-            // 1. Очистить таблицу фильмов
-            try (Statement stmt = conn.createStatement()) {
-                stmt.executeUpdate("DELETE FROM movies");
-            }
 
             for (Movie movie : collection) {
                 Long personId = null;
+
+                // --- оператор (Person)
                 if (movie.getOperator() != null) {
-                    // Проверяем, есть ли паспорт
+                    // Проверяем, есть ли человек с таким паспортом
                     String checkSql = "SELECT id FROM persons WHERE passport_id = ?";
                     try (PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
                         psCheck.setString(1, movie.getOperator().getPassportID());
@@ -93,10 +96,13 @@ public class MovieRepository {
                         }
                     }
 
-                    // Если нет — вставляем
+                    // Если нет — добавляем
                     if (personId == null) {
-                        String sqlPerson = "INSERT INTO persons(name, passport_id, eye_color, nationality, loc_x, loc_y, loc_name) " +
-                                           "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
+                        String sqlPerson = """
+                        INSERT INTO persons(name, passport_id, eye_color, nationality, loc_x, loc_y, loc_name)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        RETURNING id
+                    """;
                         try (PreparedStatement ps = conn.prepareStatement(sqlPerson)) {
                             ps.setString(1, movie.getOperator().getName());
                             ps.setString(2, movie.getOperator().getPassportID());
@@ -112,20 +118,70 @@ public class MovieRepository {
                     }
                 }
 
-                // Вставка фильма
-                String sqlMovie = "INSERT INTO movies(name, coord_x, coord_y, oscars_count, budget, usa_box_office, mpaa_rating, operator_id, owner_login) " +
-                                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                try (PreparedStatement ps = conn.prepareStatement(sqlMovie)) {
-                    ps.setString(1, movie.getName());
-                    ps.setFloat(2, movie.getCoordinates().getX());
-                    ps.setLong(3, movie.getCoordinates().getY());
-                    ps.setLong(4, movie.getOscarsCount());
-                    ps.setFloat(5, movie.getBudget());
-                    ps.setDouble(6, movie.getUsaBoxOffice());
-                    ps.setString(7, movie.getMpaaRating().name());
-                    if (personId != null) ps.setLong(8, personId); else ps.setNull(8, Types.BIGINT);
-                    ps.setString(9, movie.getUserLogin());
-                    ps.executeUpdate();
+                // --- проверяем, существует ли фильм по id
+                boolean exists = false;
+                if (movie.getId() != 0) {
+                    String checkMovie = "SELECT id FROM movies WHERE id = ?";
+                    try (PreparedStatement ps = conn.prepareStatement(checkMovie)) {
+                        ps.setLong(1, movie.getId());
+                        try (ResultSet rs = ps.executeQuery()) {
+                            exists = rs.next();
+                        }
+                    }
+                }
+
+                if (exists) {
+                    // --- обновляем
+                    String updateSql = """
+                    UPDATE movies
+                    SET name = ?, coord_x = ?, coord_y = ?, oscars_count = ?, budget = ?, usa_box_office = ?, 
+                        mpaa_rating = ?, operator_id = ?, owner_login = ?
+                    WHERE id = ?
+                """;
+                    try (PreparedStatement ps = conn.prepareStatement(updateSql)) {
+                        ps.setString(1, movie.getName());
+                        ps.setFloat(2, movie.getCoordinates().getX());
+                        ps.setLong(3, movie.getCoordinates().getY());
+                        ps.setLong(4, movie.getOscarsCount());
+                        ps.setFloat(5, movie.getBudget());
+                        ps.setDouble(6, movie.getUsaBoxOffice());
+                        ps.setString(7, movie.getMpaaRating().name());
+                        if (personId != null)
+                            ps.setLong(8, personId);
+                        else
+                            ps.setNull(8, Types.BIGINT);
+                        ps.setString(9, movie.getUserLogin());
+                        ps.setLong(10, movie.getId());
+                        ps.executeUpdate();
+                    }
+
+                } else {
+                    // --- вставляем новый
+                    String insertSql = """
+                    INSERT INTO movies(name, coord_x, coord_y, oscars_count, budget, usa_box_office, mpaa_rating, operator_id, owner_login)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    RETURNING id
+                """;
+                    try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
+                        ps.setString(1, movie.getName());
+                        ps.setFloat(2, movie.getCoordinates().getX());
+                        ps.setLong(3, movie.getCoordinates().getY());
+                        ps.setLong(4, movie.getOscarsCount());
+                        ps.setFloat(5, movie.getBudget());
+                        ps.setDouble(6, movie.getUsaBoxOffice());
+                        ps.setString(7, movie.getMpaaRating().name());
+                        if (personId != null)
+                            ps.setLong(8, personId);
+                        else
+                            ps.setNull(8, Types.BIGINT);
+                        ps.setString(9, movie.getUserLogin());
+                        try (ResultSet rs = ps.executeQuery()) {
+                            if (rs.next()) {
+                                long newId = rs.getLong("id");
+                                movie.setId(newId);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -164,13 +220,18 @@ public class MovieRepository {
 
         return movie;
     }
-    /** Добавить новый фильм в коллекцию (только в памяти) */
+
+    /**
+     * Добавить новый фильм в коллекцию (только в памяти)
+     */
     public static void add(List<Movie> collection, Movie movie, String ownerLogin) {
         movie.setUserLogin(ownerLogin); // помечаем владельца
         collection.add(movie);
     }
 
-    /** Обновить существующий фильм по ID, если владелец совпадает */
+    /**
+     * Обновить существующий фильм по ID, если владелец совпадает
+     */
     public static boolean update(List<Movie> collection, Movie updatedMovie, String ownerLogin) {
         for (Movie movie : collection) {
             if (movie.getId() == updatedMovie.getId() && ownerLogin.equals(movie.getUserLogin())) {
@@ -187,7 +248,9 @@ public class MovieRepository {
         return false; // не найден фильм с таким ID и владельцем
     }
 
-    /** Очистить все фильмы конкретного пользователя из коллекции */
+    /**
+     * Очистить все фильмы конкретного пользователя из коллекции
+     */
     public static void clearByOwner(List<Movie> collection, String ownerLogin) {
         Iterator<Movie> iterator = collection.iterator();
         while (iterator.hasNext()) {

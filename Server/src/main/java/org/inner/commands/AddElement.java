@@ -35,7 +35,8 @@ public class AddElement implements Command {
         }
 
         mySet.add(arg);
-
+        MovieRepository.saveAll(mySet);
+        mySet = MovieRepository.loadAll();
         return "Фильм '" + arg.getName() + "' успешно добавлен!";
     }
 
