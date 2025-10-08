@@ -24,6 +24,17 @@ public class MovieRepository {
     private static final String USER = "s465527";
     private static final String PASSWORD = "gYobdNKJPaDxgOiE";
 
+    public MovieRepository(){
+        try {
+            Class.forName("org.postgresql.Driver");
+            System.out.println("PostgreSQL драйвер загружен успешно");
+        } catch (ClassNotFoundException e) {
+            System.err.println("Драйвер PostgreSQL не найден в classpath!");
+            e.printStackTrace();
+            return;
+        }
+    }
+
     /** Загружаем коллекцию из базы */
     public static List<Movie> loadAll() {
         List<Movie> list = new ArrayList<>();
