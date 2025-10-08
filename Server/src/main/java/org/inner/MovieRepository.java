@@ -27,17 +27,39 @@ public class MovieRepository {
     /** Загружаем коллекцию из базы */
     public static List<Movie> loadAll() {
         List<Movie> list = new ArrayList<>();
-        String sql = "SELECT m.*, p.name AS pname, p.passport_id, p.eye_color, p.nationality, p.loc_x, p.loc_y, p.loc_name " +
-                     "FROM movies m LEFT JOIN persons p ON m.operator_id = p.id ORDER BY m.name";
+        String sql = """
+        SELECT m.*, 
+               p.name AS pname, 
+               p.passport_id, 
+               p.eye_color, 
+               p.nationality, 
+               p.loc_x, 
+               p.loc_y, 
+               p.loc_name,
+               m.owner_login AS owner_login
+        FROM movies m 
+        LEFT JOIN persons p ON m.operator_id = p.id 
+        ORDER BY m.name
+        """;
+
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) list.add(mapRowToMovie(rs));
+
+            while (rs.next()) {
+                Movie movie = mapRowToMovie(rs);
+                // Добавляем новое поле userLogin
+                movie.setUserLogin(rs.getString("owner_login"));
+                list.add(movie);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return list;
     }
+
 
     /** Сохраняем всю коллекцию в базу при завершении работы сервера */
     public static void saveAll(List<Movie> collection) {
