@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DatabaseManager {
 
-    private static final String url = "jdbc:postgresql://localhost:5433/studs";
+    private static final String url = "jdbc:postgresql://localhost:5432/studs?sslmode=require";
     private static final String user = "s465527";
     private static final String password = "gYobdNKJPaDxgOiE";
 

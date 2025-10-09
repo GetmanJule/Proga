@@ -21,7 +21,7 @@ import java.util.List;
 
 public class MovieRepository {
 
-    private static final String URL = "jdbc:postgresql://localhost:5433/studs";
+    private static final String URL = "jdbc:postgresql://localhost:5432/studs?sslmode=require";
     private static final String USER = "s465527";
     private static final String PASSWORD = "gYobdNKJPaDxgOiE";
 
@@ -83,104 +83,120 @@ public class MovieRepository {
             conn.setAutoCommit(false);
 
             for (Movie movie : collection) {
-                Long personId = null;
+                try {
+                    Long personId = null;
 
-                // --- оператор (Person)
-                if (movie.getOperator() != null) {
-                    // Проверяем, есть ли человек с таким паспортом
-                    String checkSql = "SELECT id FROM persons WHERE passport_id = ?";
-                    try (PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
-                        psCheck.setString(1, movie.getOperator().getPassportID());
-                        try (ResultSet rs = psCheck.executeQuery()) {
-                            if (rs.next()) personId = rs.getLong("id");
+                    // --- оператор (Person)
+                    if (movie.getOperator() != null) {
+                        // Проверяем, есть ли человек с таким паспортом
+                        String checkSql = "SELECT id FROM persons WHERE passport_id = ?";
+                        try (PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
+                            psCheck.setString(1, movie.getOperator().getPassportID());
+                            try (ResultSet rs = psCheck.executeQuery()) {
+                                if (rs.next()) personId = rs.getLong("id");
+                            }
+                        }
+
+                        // Если нет — добавляем
+                        if (personId == null) {
+                            String sqlPerson = """
+                            INSERT INTO persons(name, passport_id, eye_color, nationality, loc_x, loc_y, loc_name)
+                            VALUES (?, ?, ?, ?, ?, ?, ?)
+                            RETURNING id
+                        """;
+                            try (PreparedStatement ps = conn.prepareStatement(sqlPerson)) {
+                                ps.setString(1, movie.getOperator().getName());
+                                ps.setString(2, movie.getOperator().getPassportID());
+                                ps.setString(3, movie.getOperator().getEyeColor() != null ? movie.getOperator().getEyeColor().toString() : null);
+                                ps.setString(4, movie.getOperator().getNationality().toString());
+                                ps.setObject(5, movie.getOperator().getLocation() != null ? movie.getOperator().getLocation().getX() : null);
+                                ps.setObject(6, movie.getOperator().getLocation() != null ? movie.getOperator().getLocation().getY() : null);
+                                ps.setObject(7, movie.getOperator().getLocation() != null ? movie.getOperator().getLocation().getName() : null);
+                                try (ResultSet rs = ps.executeQuery()) {
+                                    if (rs.next()) personId = rs.getLong(1);
+                                }
+                            }
                         }
                     }
 
-                    // Если нет — добавляем
-                    if (personId == null) {
-                        String sqlPerson = """
-                        INSERT INTO persons(name, passport_id, eye_color, nationality, loc_x, loc_y, loc_name)
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                    // --- проверяем, существует ли фильм по id
+                    boolean exists = false;
+                    if (movie.getId() != 0) {
+                        String checkMovie = "SELECT id FROM movies WHERE id = ?";
+                        try (PreparedStatement ps = conn.prepareStatement(checkMovie)) {
+                            ps.setLong(1, movie.getId());
+                            try (ResultSet rs = ps.executeQuery()) {
+                                exists = rs.next();
+                            }
+                        }
+                    }
+
+                    if (exists) {
+                        // --- обновляем
+                        String updateSql = """
+                        UPDATE movies
+                        SET name = ?, coord_x = ?, coord_y = ?, oscars_count = ?, budget = ?, usa_box_office = ?, 
+                            mpaa_rating = ?, operator_id = ?, owner_login = ?
+                        WHERE id = ?
+                    """;
+                        try (PreparedStatement ps = conn.prepareStatement(updateSql)) {
+                            ps.setString(1, movie.getName());
+                            ps.setFloat(2, movie.getCoordinates().getX());
+                            ps.setLong(3, movie.getCoordinates().getY());
+                            long oscars = movie.getOscarsCount();
+                            if (oscars <= 0) {
+                                System.out.println("Количество Оскаров должно быть положительным. Исправлено на 1.");
+                                oscars = 1;
+                            }
+                            ps.setLong(4, oscars);
+                            ps.setFloat(5, movie.getBudget());
+                            ps.setDouble(6, movie.getUsaBoxOffice());
+                            ps.setString(7, movie.getMpaaRating().name());
+                            if (personId != null)
+                                ps.setLong(8, personId);
+                            else
+                                ps.setNull(8, Types.BIGINT);
+                            ps.setString(9, movie.getUserLogin());
+                            ps.setLong(10, movie.getId());
+                            ps.executeUpdate();
+                        }
+
+                    } else {
+                        // --- вставляем новый
+                        String insertSql = """
+                        INSERT INTO movies(name, coord_x, coord_y, oscars_count, budget, usa_box_office, mpaa_rating, operator_id, owner_login)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                         RETURNING id
                     """;
-                        try (PreparedStatement ps = conn.prepareStatement(sqlPerson)) {
-                            ps.setString(1, movie.getOperator().getName());
-                            ps.setString(2, movie.getOperator().getPassportID());
-                            ps.setString(3, movie.getOperator().getEyeColor() != null ? movie.getOperator().getEyeColor().toString() : null);
-                            ps.setString(4, movie.getOperator().getNationality().toString());
-                            ps.setObject(5, movie.getOperator().getLocation() != null ? movie.getOperator().getLocation().getX() : null);
-                            ps.setObject(6, movie.getOperator().getLocation() != null ? movie.getOperator().getLocation().getY() : null);
-                            ps.setObject(7, movie.getOperator().getLocation() != null ? movie.getOperator().getLocation().getName() : null);
+                        try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
+                            ps.setString(1, movie.getName());
+                            ps.setFloat(2, movie.getCoordinates().getX());
+                            ps.setLong(3, movie.getCoordinates().getY());
+                            ps.setLong(4, movie.getOscarsCount());
+                            ps.setFloat(5, movie.getBudget());
+                            ps.setDouble(6, movie.getUsaBoxOffice());
+                            ps.setString(7, movie.getMpaaRating().name());
+                            if (personId != null)
+                                ps.setLong(8, personId);
+                            else
+                                ps.setNull(8, Types.BIGINT);
+                            ps.setString(9, movie.getUserLogin());
                             try (ResultSet rs = ps.executeQuery()) {
-                                if (rs.next()) personId = rs.getLong(1);
+                                if (rs.next()) {
+                                    long newId = rs.getLong("id");
+                                    movie.setId(newId);
+                                }
                             }
                         }
                     }
-                }
 
-                // --- проверяем, существует ли фильм по id
-                boolean exists = false;
-                if (movie.getId() != 0) {
-                    String checkMovie = "SELECT id FROM movies WHERE id = ?";
-                    try (PreparedStatement ps = conn.prepareStatement(checkMovie)) {
-                        ps.setLong(1, movie.getId());
-                        try (ResultSet rs = ps.executeQuery()) {
-                            exists = rs.next();
-                        }
-                    }
-                }
-
-                if (exists) {
-                    // --- обновляем
-                    String updateSql = """
-                    UPDATE movies
-                    SET name = ?, coord_x = ?, coord_y = ?, oscars_count = ?, budget = ?, usa_box_office = ?, 
-                        mpaa_rating = ?, operator_id = ?, owner_login = ?
-                    WHERE id = ?
-                """;
-                    try (PreparedStatement ps = conn.prepareStatement(updateSql)) {
-                        ps.setString(1, movie.getName());
-                        ps.setFloat(2, movie.getCoordinates().getX());
-                        ps.setLong(3, movie.getCoordinates().getY());
-                        ps.setLong(4, movie.getOscarsCount());
-                        ps.setFloat(5, movie.getBudget());
-                        ps.setDouble(6, movie.getUsaBoxOffice());
-                        ps.setString(7, movie.getMpaaRating().name());
-                        if (personId != null)
-                            ps.setLong(8, personId);
-                        else
-                            ps.setNull(8, Types.BIGINT);
-                        ps.setString(9, movie.getUserLogin());
-                        ps.setLong(10, movie.getId());
-                        ps.executeUpdate();
-                    }
-
-                } else {
-                    // --- вставляем новый
-                    String insertSql = """
-                    INSERT INTO movies(name, coord_x, coord_y, oscars_count, budget, usa_box_office, mpaa_rating, operator_id, owner_login)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    RETURNING id
-                """;
-                    try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
-                        ps.setString(1, movie.getName());
-                        ps.setFloat(2, movie.getCoordinates().getX());
-                        ps.setLong(3, movie.getCoordinates().getY());
-                        ps.setLong(4, movie.getOscarsCount());
-                        ps.setFloat(5, movie.getBudget());
-                        ps.setDouble(6, movie.getUsaBoxOffice());
-                        ps.setString(7, movie.getMpaaRating().name());
-                        if (personId != null)
-                            ps.setLong(8, personId);
-                        else
-                            ps.setNull(8, Types.BIGINT);
-                        ps.setString(9, movie.getUserLogin());
-                        try (ResultSet rs = ps.executeQuery()) {
-                            if (rs.next()) {
-                                long newId = rs.getLong("id");
-                                movie.setId(newId);
-                            }
-                        }
+                } catch (org.postgresql.util.PSQLException e) {
+                    if (e.getMessage().contains("violates check constraint")) {
+                        System.out.println("Пропущена запись из-за нарушения ограничения: " + movie.getName());
+                        conn.rollback(); // откатываем только эту запись
+                        continue;
+                    } else {
+                        throw e; // остальные SQL-ошибки не трогаем
                     }
                 }
             }
@@ -260,4 +276,33 @@ public class MovieRepository {
             }
         }
     }
+    /**
+     * Удаляет фильм по ID (только если владелец совпадает).
+     *
+     * @param collection коллекция фильмов в памяти
+     * @param movieId ID фильма, который нужно удалить
+     * @param ownerLogin логин пользователя-владельца
+     * @return true, если фильм был удалён, иначе false
+     */
+    public static boolean deleteById(List<Movie> collection, long movieId, String ownerLogin) {
+        boolean deleted = false;
+
+        // --- удаляем из базы
+        String sql = "DELETE FROM movies WHERE id = ? AND owner_login = ?";
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, movieId);
+            ps.setString(2, ownerLogin);
+            deleted = ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        // --- НЕ удаляем из коллекции здесь!
+        // collection.removeIf(m -> m.getId() == movieId && ownerLogin.equals(m.getUserLogin()));
+
+        return deleted;
+    }
+
 }

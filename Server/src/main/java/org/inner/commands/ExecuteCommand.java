@@ -1,91 +1,139 @@
 package org.inner.commands;
 
-import org.data.inner.Coordinates;
-import org.data.inner.Location;
-import org.data.inner.Movie;
-import org.data.inner.Person;
-import org.data.inner.enums.Color;
-import org.data.inner.enums.Country;
-import org.data.inner.enums.MpaaRating;
-
+import org.data.inner.*;
+import org.data.inner.enums.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
-/*
-
+/**
+ * execute_script file_name — выполнить команды из указанного файла
  */
 public class ExecuteCommand implements Command {
+
+    private String login;
+
+    @Override
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
     @Override
     public String doo(List<Movie> mySet, String s) {
-        String[] idS = s.split(" ");
-        String filename;
-        try {
-            filename = idS[1];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            return "Путь не указан! Попробуйте еще раз!";
+        String[] args = s.trim().split(" ");
+        if (args.length < 2) {
+            return " Путь к файлу не указан!";
         }
 
-        ExecuteCommand ex = new ExecuteCommand();
-
-        try (Scanner sc = new Scanner(new File("./scripts/" + filename))) {
-            CommandManager.fileQueue.add(filename);
-
-            StringBuilder result = new StringBuilder("Выполнение скрипта '" + filename + "':\n");
-
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine().trim();
-                if (line.isEmpty()) continue;
-
-                String[] parts = line.split(" ");
-                String commandName = parts[0];
-
-                if (parts.length >= 2 && commandName.equals("execute_script")) {
-                    String nestedFile = parts[1];
-                    if (CommandManager.fileQueue.contains(nestedFile)) {
-                        result.append("Обнаружена рекурсия при попытке выполнить '")
-                                .append(nestedFile).append("'\n");
-                    } else {
-                        result.append(ex.doo(mySet, line)).append("\n");
-                    }
-                } else {
-                    try {
-                        Command command = CommandManager.listOfCommand.get(commandName);
-                        try {
-                            Movie movie = getMovie(line);
-                            command.setArg(movie);
-                        }catch (ArrayIndexOutOfBoundsException e){
-                        }
-
-
-                        String output = command.doo(mySet, line);
-                        result.append(output).append("\n");
-                    } catch (Exception e) {
-                        result.append("Неизвестная команда: ").append(commandName).append("\n");
-                    }
-                }
-            }
-            return result.append("Скрипт '").append(filename).append("' завершён.\n").toString();
-
-        } catch (FileNotFoundException e) {
+        String filename = args[1];
+        File file = new File("./scripts/" + filename);
+        if (!file.exists()) {
             return "Файл '" + filename + "' не найден!";
         }
+
+        // предотвращаем рекурсию
+        if (CommandManager.fileQueue.contains(filename)) {
+            return " Обнаружена рекурсия при выполнении '" + filename + "'";
+        }
+
+        CommandManager.fileQueue.add(filename);
+        StringBuilder result = new StringBuilder("Выполнение скрипта '" + filename + "':\n");
+
+        List<String> lines = new ArrayList<>();
+        try (Scanner sc = new Scanner(file)) {
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine().trim();
+                if (!line.isEmpty()) lines.add(line);
+            }
+        } catch (FileNotFoundException e) {
+            return " Не удалось прочитать файл '" + filename + "'";
+        }
+
+        // 1️⃣ Собираем все корректные команды
+        List<Command> validCommands = new ArrayList<>();
+        List<String> validLines = new ArrayList<>();
+
+        for (String line : lines) {
+            String[] parts = line.split(" ");
+            String cmdName = parts[0];
+
+            if (cmdName.equals("execute_script")) {
+                String nestedFile = parts.length > 1 ? parts[1] : "";
+                if (CommandManager.fileQueue.contains(nestedFile)) {
+                    result.append("️ Пропущено из-за рекурсии: ").append(nestedFile).append("\n");
+                    continue;
+                }
+            }
+
+            Command cmd = CommandManager.listOfCommand.get(cmdName);
+            if (cmd != null) {
+                validCommands.add(cmd);
+                validLines.add(line);
+            } else {
+                result.append("Неизвестная команда: ").append(cmdName).append("\n");
+            }
+        }
+
+        for (int i = 0; i < validCommands.size(); i++) {
+            Command cmd = validCommands.get(i);
+            String line = validLines.get(i);
+            cmd.setLogin(login);
+
+            try {
+                Movie movie = getMovie(line);
+                cmd.setArg(movie);
+            } catch (Exception ignored) {
+                // если команда без аргументов — пропускаем
+            }
+        }
+
+        for (int i = 0; i < validCommands.size(); i++) {
+            Command cmd = validCommands.get(i);
+            String line = validLines.get(i);
+            result.append("Message! ").append(line).append("\n");
+
+            try {
+                String output = cmd.doo(mySet, line);
+                result.append(output).append("\n");
+            } catch (Exception e) {
+                result.append("Ошибка при выполнении '").append(line).append("': ")
+                        .append(e.getMessage()).append("\n");
+            }
+        }
+
+        CommandManager.fileQueue.remove(filename);
+        result.append("Скрипт  выполнен").append(filename).append("' завершён.\n");
+        return result.toString();
     }
 
     private static Movie getMovie(String line) {
         String[] all = line.split(" ");
-        Movie movie = new Movie(all[1], new Coordinates(Float.parseFloat(all[2]), Long.parseLong(all[3])),
-                Long.parseLong(all[4]), Float.parseFloat(all[5]), Double.parseDouble(all[6]), MpaaRating.getRating(Integer.parseInt(all[7])),
-                new Person(all[8], all[9], Color.getColorByValue(Integer.parseInt(all[10])), Country.getCountryByValue(Integer.parseInt(all[11])),
-                        new Location(Float.parseFloat(all[12]), Double.parseDouble(all[13]), all[14])));
-        return movie;
-    }
+        if (all.length < 15) throw new IllegalArgumentException("Недостаточно аргументов для Movie");
 
+        return new Movie(
+                all[1],
+                new Coordinates(Float.parseFloat(all[2]), Long.parseLong(all[3])),
+                Long.parseLong(all[4]),
+                Float.parseFloat(all[5]),
+                Double.parseDouble(all[6]),
+                MpaaRating.getRating(Integer.parseInt(all[7])),
+                new Person(
+                        all[8],
+                        all[9],
+                        Color.getColorByValue(Integer.parseInt(all[10])),
+                        Country.getCountryByValue(Integer.parseInt(all[11])),
+                        new Location(
+                                Float.parseFloat(all[12]),
+                                Double.parseDouble(all[13]),
+                                all[14]
+                        )
+                )
+        );
+    }
 
     @Override
     public String des() {
-        return "execute_script file_name : считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.";
+        return "execute_script file_name : выполнить команды из указанного файла";
     }
 
     @Override

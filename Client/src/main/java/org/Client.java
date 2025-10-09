@@ -20,7 +20,7 @@ public class Client {
     private static final int MAX_RETRIES = 5;
     private static final int RETRY_DELAY_MS = 2000;
     private static final int CONNECT_TIMEOUT_MS = 3000;
-    private static final int SELECT_TIMEOUT_MS = 500;
+    private static final int SELECT_TIMEOUT_MS = 100000;
 
     private final ClientCommandManager commandManager;
     private String login;

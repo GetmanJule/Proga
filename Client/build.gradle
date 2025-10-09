@@ -1,16 +1,24 @@
-plugins {
-    id 'application'
-}
+apply plugin: 'java'
+apply plugin: 'application'
 
-application {
-    mainClass = 'org.ClientMain'  // замени на свой реальный класс
+mainClassName = 'org.ClientMain'
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.11.0'
-    implementation 'org.slf4j:slf4j-api:2.0.16'
-    runtimeOnly 'org.slf4j:slf4j-simple:2.0.16'
+    // Добавь зависимости при необходимости
+}
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
+jar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

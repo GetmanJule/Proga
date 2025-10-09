@@ -155,6 +155,8 @@ public class Server {
             case "exit":
                 response = "Выход из программы";
                 break;
+            case "execute_script":
+                response = cmd.commandsEditor(movies, "execute_script", null, login);
             default:
                 response = cmd.commandsEditor(movies, command, null, login);
         }

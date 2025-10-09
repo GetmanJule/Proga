@@ -33,7 +33,7 @@ public class AddElement implements Command {
                 }
             }
         }
-
+        arg.setUserLogin(login);
         mySet.add(arg);
         MovieRepository.saveAll(mySet);
         mySet = MovieRepository.loadAll();
